@@ -1,0 +1,5 @@
+Starting Combined Tools Menu at Mon 02/17/2025  4:04:08.14 
+Admin rights verified 
+Checking system requirements at Mon 02/17/2025  4:04:08.15 
+All system requirements met 
+Internet connectivity verified 

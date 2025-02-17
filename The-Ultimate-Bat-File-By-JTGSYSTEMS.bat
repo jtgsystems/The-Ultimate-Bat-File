@@ -1,6 +1,68 @@
 @echo off
-color 0A
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    echo Requesting administrative privileges...
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+    "%temp%\getadmin.vbs"
+    if '%errorlevel%' NEQ '0' (
+        echo Failed to get admin rights.
+        echo Please right-click the script and select "Run as administrator"
+        pause
+        exit /B 1
+    )
+    exit /B
+
+:gotAdmin
+    if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+    pushd "%CD%"
+    CD /D "%~dp0"
+
 title Combined Tools Menu
+color 0A
+setlocal enabledelayedexpansion
+
+REM Create log file
+set "LOGFILE=%~dp0\tools_log.txt"
+echo Starting Combined Tools Menu at %date% %time% > "%LOGFILE%"
+echo Admin rights verified >> "%LOGFILE%"
+
+REM Check for required tools
+echo Verifying system requirements...
+echo Checking system requirements at %date% %time% >> "%LOGFILE%"
+
+where wmic >nul 2>&1 || (
+    echo Error: WMIC is required but not available.
+    echo This tool may not function correctly on your system.
+    echo WMIC check failed at %date% %time% >> "%LOGFILE%"
+    pause
+    exit /b 1
+)
+
+where powershell >nul 2>&1 || (
+    echo Error: PowerShell is required but not available.
+    echo This tool may not function correctly on your system.
+    echo PowerShell check failed at %date% %time% >> "%LOGFILE%"
+    pause
+    exit /b 1
+)
+
+echo All system requirements met >> "%LOGFILE%"
+
+REM Check for internet connectivity
+ping -n 1 8.8.8.8 >nul 2>&1
+if errorlevel 1 (
+    echo Warning: No internet connection detected.
+    echo Some features may not work properly.
+    echo Internet connectivity check failed at %date% %time% >> "%LOGFILE%"
+    timeout /t 3 >nul
+) else (
+    echo Internet connectivity verified >> "%LOGFILE%"
+)
 
 :MainMenu
 cls
@@ -22,15 +84,11 @@ echo 12. Privacy Settings
 echo 13. Modern Windows Features
 echo 14. Disk Health Monitor
 echo 15. Security Center
-  25 |  echo 16. Advanced Diagnostics
-  26 |  echo 17. Sponsorship
-  27 |  echo 18. Exit
 echo 16. Advanced Diagnostics
-echo 17. Exit
+echo 17. Sponsorship
+echo 18. Exit
 echo.
-  28 |  echo.
-  29 |  set /p "choice=Enter your choice (1-18): "
-set /p "choice=Enter your choice (1-17): "
+set /p "choice=Enter your choice (1-18): "
 
 if "%choice%"=="1" goto SystemInfoMenu
 if "%choice%"=="2" goto SystemMaintenanceMenu
@@ -47,11 +105,9 @@ if "%choice%"=="12" goto PrivacyMenu
 if "%choice%"=="13" goto ModernWindowsMenu
 if "%choice%"=="14" goto DiskHealthMenu
 if "%choice%"=="15" goto SecurityCenterMenu
-  45 |  if "%choice%"=="16" goto AdvancedDiagnosticsMenu
-  46 |  if "%choice%"=="17" goto SponsorshipMenu
-  47 |  if "%choice%"=="18" goto Exit
 if "%choice%"=="16" goto AdvancedDiagnosticsMenu
-if "%choice%"=="17" goto Exit
+if "%choice%"=="17" goto SponsorshipMenu
+if "%choice%"=="18" goto Exit
 
 echo Invalid choice. Please try again.
 goto MainMenu
@@ -250,9 +306,13 @@ echo 36. Network Route Trace
 echo 37. Run DirectX Diagnostic Tool (dxdiag)
 echo 38. Hardware Compatibility Check
 echo 39. System Assessment Tool (WinSAT)
-echo 40. Back to Main Menu
+echo 40. Comprehensive System Health Report
+echo 41. Comprehensive Hardware Diagnostics
+echo 42. Comprehensive Driver Health Analysis
+echo 43. Combined Diagnostics Suite
+echo 44. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-40): "
+set /p "choice=Enter your choice (1-44): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -293,7 +353,11 @@ if "%choice%"=="36" goto Tool_NetTrace
 if "%choice%"=="37" goto Tool_DXDiag
 if "%choice%"=="38" goto Tool_HWCompat
 if "%choice%"=="39" goto Tool_WinSAT
-if "%choice%"=="40" goto MainMenu
+if "%choice%"=="40" goto Tool_SystemHealthReport
+if "%choice%"=="41" goto Tool_HardwareDiagnostics
+if "%choice%"=="42" goto Tool_DriverHealth
+if "%choice%"=="43" goto Tool_CombinedDiagnostics
+if "%choice%"=="44" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto DiagnosticMenu
@@ -361,6 +425,154 @@ winsat formal
 echo Assessment complete. View results with 'winsat scores'
 pause
 goto DiagnosticMenu
+
+:Tool_HardwareDiagnostics
+echo Running Comprehensive Hardware Diagnostics...
+echo ---------------------------------------- > hardware_report.txt
+echo Hardware Diagnostic Report - %date% %time% >> hardware_report.txt
+echo ---------------------------------------- >> hardware_report.txt
+
+REM Motherboard Information
+echo MOTHERBOARD INFORMATION >> hardware_report.txt
+echo ---------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_BaseBoard | Select-Object Manufacturer,Product,SerialNumber,Version | Format-List" >> hardware_report.txt
+
+REM CPU Detailed Information
+echo. >> hardware_report.txt
+echo CPU DETAILED INFORMATION >> hardware_report.txt
+echo ----------------------- >> hardware_report.txt
+powershell -Command "@{
+    'CPU Info' = (Get-WmiObject Win32_Processor | Select-Object Name,MaxClockSpeed,NumberOfCores,NumberOfLogicalProcessors,L2CacheSize,L3CacheSize)
+    'Current Load' = (Get-WmiObject Win32_PerfFormattedData_PerfOS_Processor).PercentProcessorTime
+    'Power Information' = (Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace 'root/wmi' | Select-Object *)
+} | Format-List" >> hardware_report.txt
+
+REM Memory Detailed Analysis
+echo. >> hardware_report.txt
+echo MEMORY DETAILED ANALYSIS >> hardware_report.txt
+echo ----------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_PhysicalMemory | Select-Object DeviceLocator,Manufacturer,PartNumber,Speed,Capacity | Format-Table -AutoSize" >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_OperatingSystem | Select-Object @{Name='Total Physical(GB)';Expression={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}},@{Name='Available Physical(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}},@{Name='Total Virtual(GB)';Expression={[math]::Round($_.TotalVirtualMemorySize/1MB,2)}},@{Name='Available Virtual(GB)';Expression={[math]::Round($_.FreeVirtualMemory/1MB,2)}} | Format-List" >> hardware_report.txt
+
+REM Storage Device Details
+echo. >> hardware_report.txt
+echo STORAGE DEVICE DETAILS >> hardware_report.txt
+echo --------------------- >> hardware_report.txt
+powershell -Command "Get-PhysicalDisk | Select-Object DeviceId,FriendlyName,MediaType,BusType,Size,HealthStatus | Format-Table -AutoSize" >> hardware_report.txt
+
+REM Display Adapters
+echo. >> hardware_report.txt
+echo DISPLAY ADAPTER INFORMATION >> hardware_report.txt
+echo -------------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_VideoController | Select-Object Name,VideoProcessor,DriverVersion,CurrentHorizontalResolution,CurrentVerticalResolution,CurrentRefreshRate,AdapterRAM | Format-List" >> hardware_report.txt
+
+REM Network Adapters Detail
+echo. >> hardware_report.txt
+echo NETWORK ADAPTER DETAILS >> hardware_report.txt
+echo ---------------------- >> hardware_report.txt
+powershell -Command "Get-NetAdapter | Select-Object Name,InterfaceDescription,Status,LinkSpeed,MacAddress | Format-Table -AutoSize" >> hardware_report.txt
+
+REM Audio Devices
+echo. >> hardware_report.txt
+echo AUDIO DEVICE INFORMATION >> hardware_report.txt
+echo ----------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_SoundDevice | Select-Object Name,Manufacturer,Status | Format-Table -AutoSize" >> hardware_report.txt
+
+REM USB Controllers and Devices
+echo. >> hardware_report.txt
+echo USB CONTROLLER AND DEVICE INFORMATION >> hardware_report.txt
+echo ----------------------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_USBController | Select-Object Name,Manufacturer,Status | Format-Table -AutoSize" >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_USBHub | Select-Object Name,Status,DeviceID | Format-Table -AutoSize" >> hardware_report.txt
+
+REM Battery Information (if exists)
+echo. >> hardware_report.txt
+echo BATTERY INFORMATION >> hardware_report.txt
+echo ------------------ >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_Battery | Select-Object Name,EstimatedChargeRemaining,EstimatedRunTime | Format-Table -AutoSize" >> hardware_report.txt
+
+REM Hardware Resource Conflicts
+echo. >> hardware_report.txt
+echo HARDWARE RESOURCE CONFLICTS >> hardware_report.txt
+echo -------------------------- >> hardware_report.txt
+powershell -Command "Get-WmiObject Win32_PNPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0} | Select-Object Name,DeviceID,ConfigManagerErrorCode | Format-Table -AutoSize" >> hardware_report.txt
+
+REM Temperature Sensors (if available)
+echo. >> hardware_report.txt
+echo TEMPERATURE INFORMATION >> hardware_report.txt
+echo ---------------------- >> hardware_report.txt
+powershell -Command "Try { Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace 'root/wmi' | Select-Object InstanceName,@{Name='Temperature(C)';Expression={[math]::Round(($_.CurrentTemperature - 2732) / 10.0, 2)}} | Format-Table -AutoSize } Catch { 'Temperature sensors not available' }" >> hardware_report.txt
+
+REM Generate report summary
+echo. >> hardware_report.txt
+echo HARDWARE HEALTH SUMMARY >> hardware_report.txt
+echo ---------------------- >> hardware_report.txt
+powershell -Command "@{
+    'CPU Health' = if ((Get-WmiObject Win32_Processor).Status -eq 'OK') {'Healthy'} else {'Check Required'}
+    'Memory Health' = if ((Get-WmiObject Win32_PhysicalMemory).Status -eq 'OK') {'Healthy'} else {'Check Required'}
+    'Disk Health' = if ((Get-PhysicalDisk).HealthStatus -eq 'Healthy') {'Healthy'} else {'Check Required'}
+    'Network Health' = if ((Get-NetAdapter | Where-Object Status -eq 'Up').Count -gt 0) {'Connected'} else {'No Connection'}
+} | Format-Table -AutoSize" >> hardware_report.txt
+
+echo Hardware diagnostic report generated. Opening report...
+type hardware_report.txt
+pause
+goto MainMenu
+
+:Tool_DriverHealth
+echo Running Comprehensive Driver Health Analysis...
+echo ---------------------------------------- > driver_health.txt
+echo Driver Health Report - %date% %time% >> driver_health.txt
+echo ---------------------------------------- >> driver_health.txt
+
+REM Driver Overview
+echo DRIVER OVERVIEW >> driver_health.txt
+echo --------------- >> driver_health.txt
+powershell -Command "Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName, Manufacturer, DriverVersion, IsSigned | Format-Table -AutoSize" >> driver_health.txt
+
+REM Problem Drivers
+echo. >> driver_health.txt
+echo PROBLEM DRIVERS >> driver_health.txt
+echo --------------- >> driver_health.txt
+powershell -Command "Get-WmiObject Win32_PnPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0} | Select-Object Name, DeviceID, ConfigManagerErrorCode, Status | Format-Table -AutoSize" >> driver_health.txt
+
+REM Driver File Details
+echo. >> driver_health.txt
+echo DRIVER FILE DETAILS >> driver_health.txt
+echo ------------------ >> driver_health.txt
+powershell -Command "Get-WindowsDriver -Online -All | Select-Object Driver,OriginalFileName,Version,Date | Format-Table -AutoSize" >> driver_health.txt
+
+REM Unsigned Drivers (Security Risk)
+echo. >> driver_health.txt
+echo UNSIGNED DRIVERS >> driver_health.txt
+echo ---------------- >> driver_health.txt
+powershell -Command "Get-WmiObject Win32_PnPSignedDriver | Where-Object {!$_.IsSigned} | Select-Object DeviceName, DriverVersion, Manufacturer | Format-Table -AutoSize" >> driver_health.txt
+
+REM Recently Updated Drivers
+echo. >> driver_health.txt
+echo RECENTLY UPDATED DRIVERS >> driver_health.txt
+echo ----------------------- >> driver_health.txt
+powershell -Command "Get-WmiObject Win32_PnPSignedDriver | Sort-Object DriverDate -Descending | Select-Object -First 10 DeviceName, DriverVersion, DriverDate | Format-Table -AutoSize" >> driver_health.txt
+
+REM Driver Store Information
+echo. >> driver_health.txt
+echo DRIVER STORE INFORMATION >> driver_health.txt
+echo ------------------------ >> driver_health.txt
+pnputil /enum-drivers >> driver_health.txt
+
+REM Generate Summary
+echo. >> driver_health.txt
+echo DRIVER HEALTH SUMMARY >> driver_health.txt
+echo -------------------- >> driver_health.txt
+powershell -Command "@{
+    'Total Drivers' = (Get-WmiObject Win32_PnPSignedDriver).Count
+    'Unsigned Drivers' = (Get-WmiObject Win32_PnPSignedDriver | Where-Object {!$_.IsSigned}).Count
+    'Problem Drivers' = (Get-WmiObject Win32_PnPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0}).Count
+} | Format-Table -AutoSize" >> driver_health.txt
+
+type driver_health.txt
+pause
+goto MainMenu
 
 :NetworkingMenu
 cls
@@ -500,9 +712,10 @@ echo 27. Enable BitLocker
 echo 28. Check for Credential Manager
 echo 29. Add Credential
 echo 30. Remove Credential
-echo 31. Back to Main Menu
+echo 31. Comprehensive Security Scan
+echo 32. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-31): "
+set /p "choice=Enter your choice (1-32): "
 
 if "%choice%"=="1" goto Tool001
 if "%choice%"=="2" goto Tool024
@@ -534,11 +747,72 @@ if "%choice%"=="27" goto Tool080
 if "%choice%"=="28" goto Tool081
 if "%choice%"=="29" goto Tool082
 if "%choice%"=="30" goto Tool083
-if "%choice%"=="31" goto MainMenu
+if "%choice%"=="31" goto Tool_SecurityScan
+if "%choice%"=="32" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SecurityMenu
 
+:Tool_SecurityScan
+echo Running Comprehensive Security Scan...
+echo ---------------------------------------- > security_audit.txt
+echo Security Audit Report - %date% %time% >> security_audit.txt
+echo ---------------------------------------- >> security_audit.txt
+
+REM Windows Defender Status
+echo Windows Defender Status: >> security_audit.txt
+powershell -Command "$defender = Get-MpComputerStatus; @{
+    'Real-time Protection' = $defender.RealTimeProtectionEnabled
+    'Behavior Monitor' = $defender.BehaviorMonitorEnabled
+    'Antivirus Signature' = $defender.AntivirusSignatureLastUpdated
+    'Network Protection' = $defender.IsTamperProtected
+    'Quick Scan Age (Days)' = $defender.QuickScanAge
+    'Full Scan Age (Days)' = $defender.FullScanAge
+} | Format-Table -AutoSize" >> security_audit.txt
+
+REM System Integrity
+echo. >> security_audit.txt
+echo System Integrity Check: >> security_audit.txt
+sfc /verifyonly >> security_audit.txt 2>&1
+
+REM Check Windows Update Status
+echo. >> security_audit.txt
+echo Windows Update Status: >> security_audit.txt
+powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 10 HotFixID,InstalledOn,Description | Format-Table -AutoSize" >> security_audit.txt
+
+REM Check Services Status
+echo. >> security_audit.txt
+echo Critical Services Status: >> security_audit.txt
+powershell -Command "Get-Service | Where-Object {$_.Name -match 'defender|firewall|bits|wuauserv|wscsvc'} | Format-Table Name,DisplayName,Status -AutoSize" >> security_audit.txt
+
+REM Check Network Security
+echo. >> security_audit.txt
+echo Network Security Status: >> security_audit.txt
+netsh advfirewall show allprofiles >> security_audit.txt
+
+REM Check User Account Security
+echo. >> security_audit.txt
+echo User Account Security: >> security_audit.txt
+net accounts >> security_audit.txt
+
+REM Check TPM Status
+echo. >> security_audit.txt
+echo TPM Status: >> security_audit.txt
+powershell -Command "Get-Tpm | Select-Object TpmPresent,TpmReady,TpmEnabled | Format-List" >> security_audit.txt
+
+REM Check BitLocker Status
+echo. >> security_audit.txt
+echo BitLocker Status: >> security_audit.txt
+manage-bde -status C: >> security_audit.txt
+
+REM Check SMBv1 Status (security vulnerability)
+echo. >> security_audit.txt
+echo SMBv1 Protocol Status: >> security_audit.txt
+powershell -Command "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol | Select-Object State" >> security_audit.txt
+
+type security_audit.txt
+pause
+goto SecurityMenu
 
 :TroubleshootingMenu
 cls
@@ -643,9 +917,10 @@ echo 20. Run Scheduled Task
 echo 21. Hardware Resource Usage
 echo 22. Monitor Color Calibration
 echo 23. System Stability Check
-echo 24. Back to Main Menu
+echo 24. Comprehensive Performance Analysis
+echo 25. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-24): "
+set /p "choice=Enter your choice (1-25): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -670,7 +945,8 @@ if "%choice%"=="20" goto Tool068
 if "%choice%"=="21" goto Tool_HWResources
 if "%choice%"=="22" goto Tool_ColorCal
 if "%choice%"=="23" goto Tool_StabilityCheck
-if "%choice%"=="24" goto MainMenu
+if "%choice%"=="24" goto Tool_PerformanceAnalysis
+if "%choice%"=="25" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto PerformanceMenu
@@ -696,6 +972,103 @@ echo Running System Stability Check...
 powershell "Get-WinEvent -FilterHashtable @{LogName='System'; Level=2,3} -MaxEvents 50 | Format-Table TimeCreated,LevelDisplayName,Message -AutoSize"
 pause
 goto PerformanceMenu
+
+:Tool_PerformanceAnalysis
+echo Running Comprehensive Performance Analysis...
+echo ---------------------------------------- > performance_analysis.txt
+echo Performance Analysis Report - %date% %time% >> performance_analysis.txt
+echo ---------------------------------------- >> performance_analysis.txt
+
+REM CPU Performance Analysis
+echo CPU PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo ----------------------- >> performance_analysis.txt
+powershell -Command "@{
+    'CPU Usage' = Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 5
+    'DPC Rate' = Get-Counter '\Processor(_Total)\% DPC Time' -SampleInterval 1 -MaxSamples 1
+    'Interrupt Rate' = Get-Counter '\Processor(_Total)\% Interrupt Time' -SampleInterval 1 -MaxSamples 1
+    'System Calls' = Get-Counter '\System\System Calls/sec' -SampleInterval 1 -MaxSamples 1
+} | Format-List" >> performance_analysis.txt
+
+REM Memory Performance
+echo. >> performance_analysis.txt
+echo MEMORY PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo -------------------------- >> performance_analysis.txt
+powershell -Command "@{
+    'Available Memory' = Get-Counter '\Memory\Available MBytes'
+    'Pages/sec' = Get-Counter '\Memory\Pages/sec'
+    'Page Faults/sec' = Get-Counter '\Memory\Page Faults/sec'
+    'Cache Bytes' = Get-Counter '\Memory\Cache Bytes'
+    'Committed Bytes' = Get-Counter '\Memory\Committed Bytes'
+} | Format-List" >> performance_analysis.txt
+
+REM Disk Performance
+echo. >> performance_analysis.txt
+echo DISK PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo ------------------------ >> performance_analysis.txt
+powershell -Command "@{
+    'Disk Read/Write' = Get-Counter '\PhysicalDisk(_Total)\Disk Transfers/sec'
+    'Disk Queue Length' = Get-Counter '\PhysicalDisk(_Total)\Current Disk Queue Length'
+    'Disk Time' = Get-Counter '\PhysicalDisk(_Total)\% Disk Time'
+    'Average Response Time' = Get-Counter '\PhysicalDisk(_Total)\Avg. Disk sec/Transfer'
+} | Format-List" >> performance_analysis.txt
+
+REM Network Performance
+echo. >> performance_analysis.txt
+echo NETWORK PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo --------------------------- >> performance_analysis.txt
+powershell -Command "Get-NetAdapter | ForEach-Object {
+    $adapter = $_
+    @{
+        'Adapter' = $adapter.Name
+        'Bytes Sent/sec' = Get-Counter ('\Network Interface(' + $adapter.Name + ')\Bytes Sent/sec') -ErrorAction SilentlyContinue
+        'Bytes Received/sec' = Get-Counter ('\Network Interface(' + $adapter.Name + ')\Bytes Received/sec') -ErrorAction SilentlyContinue
+        'Current Bandwidth' = Get-Counter ('\Network Interface(' + $adapter.Name + ')\Current Bandwidth') -ErrorAction SilentlyContinue
+    }
+} | Format-List" >> performance_analysis.txt
+
+REM Process Performance
+echo. >> performance_analysis.txt
+echo PROCESS PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo ---------------------------- >> performance_analysis.txt
+powershell -Command "Get-Process | Sort-Object CPU -Descending | Select-Object -First 10 Name,CPU,WorkingSet,Handles | Format-Table -AutoSize" >> performance_analysis.txt
+
+REM Service Performance
+echo. >> performance_analysis.txt
+echo SERVICE PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo --------------------------- >> performance_analysis.txt
+powershell -Command "Get-Service | Where-Object {$_.Status -eq 'Running'} | ForEach-Object {
+    $process = Get-Process -Id (Get-WmiObject Win32_Service | Where-Object {$_.Name -eq $_.Name}).ProcessId -ErrorAction SilentlyContinue
+    if ($process) {
+        @{
+            'Service' = $_.Name
+            'CPU' = $process.CPU
+            'Memory' = $process.WorkingSet
+            'Handles' = $process.Handles
+        }
+    }
+} | Format-Table -AutoSize" >> performance_analysis.txt
+
+REM Boot Performance
+echo. >> performance_analysis.txt
+echo BOOT PERFORMANCE ANALYSIS >> performance_analysis.txt
+echo ------------------------ >> performance_analysis.txt
+powershell -Command "Get-WinEvent -FilterHashtable @{LogName='System';Id=100} -MaxEvents 1 | Select-Object TimeCreated,Message" >> performance_analysis.txt
+
+REM Performance Summary
+echo. >> performance_analysis.txt
+echo PERFORMANCE SUMMARY >> performance_analysis.txt
+echo ------------------- >> performance_analysis.txt
+powershell -Command "@{
+    'System Uptime' = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    'Average CPU Load' = (Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 5).CounterSamples.CookedValue | Measure-Object -Average | Select-Object Average
+    'Memory Pressure' = if ((Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue -lt 500) {'High'} else {'Normal'}
+    'Disk Health' = if ((Get-Counter '\PhysicalDisk(_Total)\% Disk Time').CounterSamples.CookedValue -gt 90) {'Check Required'} else {'Normal'}
+    'Network Status' = if ((Get-NetAdapter | Where-Object Status -eq 'Up').Count -gt 0) {'Connected'} else {'Check Required'}
+} | Format-Table -AutoSize" >> performance_analysis.txt
+
+type performance_analysis.txt
+pause
+goto MainMenu
 
 :SoftwareMenu
 cls
@@ -1068,9 +1441,12 @@ echo 22. Print Spooler Status
 echo 23. Windows Installer State
 echo 24. User Profile Analysis
 echo 25. System Access Check
-echo 26. Back to Main Menu
+echo 26. Service Analysis
+echo 27. Startup Analysis
+echo 28. Registry Analysis
+echo 29. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-26): "
+set /p "choice=Enter your choice (1-29): "
 
 if "%choice%"=="1" goto Tool_ReliabilityReport
 if "%choice%"=="2" goto Tool_ComponentStore
@@ -1097,24 +1473,12 @@ if "%choice%"=="22" goto Tool_PrintSpooler
 if "%choice%"=="23" goto Tool_MSIState
 if "%choice%"=="24" goto Tool_UserProfile
 if "%choice%"=="25" goto Tool_SysAccess
-if "%choice%"=="26" goto MainMenu
+if "%choice%"=="26" goto Tool_ServiceAnalysis
+if "%choice%"=="27" goto Tool_StartupAnalysis
+if "%choice%"=="28" goto Tool_RegistryAnalysis
+if "%choice%"=="29" goto MainMenu
 
 :Tool_ReliabilityReport
-1095 | 
-1096 | :SponsorshipMenu
-1097 |  cls
-1098 |  echo.
-1099 |  echo Sponsorship
-1100 |  echo -----------
-1101 |  echo If you are interested in sponsoring this tool,
-1102 |  echo your link can be placed in this menu!
-1103 |  echo.
-1104 |  echo Website: https://www.jtgsystems.com
-1105 |  echo.
-1106 |  pause
-1107 |  goto MainMenu
-1108 | 
-1096 | :Tool_ReliabilityReport
 echo Generating System Reliability Report...
 powershell "Get-WinEvent -LogName Microsoft-Windows-Reliability/Operational | Where-Object { $_.LevelDisplayName -eq 'Error' } | Format-Table TimeCreated, Message -AutoSize" > reliability_report.txt
 echo Report saved to reliability_report.txt
@@ -1275,52 +1639,609 @@ echo Security configuration exported to security_config.txt
 pause
 goto AdvancedDiagnosticsMenu
 
+:Tool_SystemHealthReport
+echo Running Comprehensive System Health Report...
+echo ---------------------------------------- > system_health.txt
+echo System Health Report - %date% %time% >> system_health.txt
+echo ---------------------------------------- >> system_health.txt
+
+REM System Information
+echo SYSTEM OVERVIEW >> system_health.txt
+echo --------------- >> system_health.txt
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type" /C:"Total Physical Memory" /C:"Available Physical Memory" >> system_health.txt
+
+REM CPU Health
+echo. >> system_health.txt
+echo CPU HEALTH >> system_health.txt
+echo ---------- >> system_health.txt
+powershell -Command "$cpu = Get-WmiObject Win32_Processor; @{
+    'CPU Load' = $cpu.LoadPercentage
+    'Current Clock Speed' = $cpu.CurrentClockSpeed
+    'Max Clock Speed' = $cpu.MaxClockSpeed
+    'Cores' = $cpu.NumberOfCores
+    'Threads' = $cpu.NumberOfLogicalProcessors
+    'Temperature' = if ($cpu.Temperature) { $cpu.Temperature } else { 'Not Available' }
+} | Format-Table -AutoSize" >> system_health.txt
+
+REM Memory Health
+echo. >> system_health.txt
+echo MEMORY HEALTH >> system_health.txt
+echo ------------- >> system_health.txt
+powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='Total Memory(GB)';Expression={[math]::Round($_.TotalVisibleMemorySize/1MB, 2)}}, @{Name='Free Memory(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB, 2)}}, @{Name='Memory Usage(%)';Expression={[math]::Round(($_.TotalVisibleMemorySize-$_.FreePhysicalMemory)/$_.TotalVisibleMemorySize*100, 2)}} | Format-Table -AutoSize" >> system_health.txt
+
+REM Disk Health
+echo. >> system_health.txt
+echo DISK HEALTH >> system_health.txt
+echo ----------- >> system_health.txt
+powershell -Command "Get-PhysicalDisk | Select-Object DeviceId, MediaType, OperationalStatus, HealthStatus, @{Name='Size(GB)';Expression={[math]::Round($_.Size/1GB, 2)}} | Format-Table -AutoSize" >> system_health.txt
+
+REM SMART Status
+echo. >> system_health.txt
+echo SMART STATUS >> system_health.txt
+echo ------------ >> system_health.txt
+wmic diskdrive get status,caption >> system_health.txt
+
+REM Network Health
+echo. >> system_health.txt
+echo NETWORK HEALTH >> system_health.txt
+echo -------------- >> system_health.txt
+powershell -Command "Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object Name, InterfaceDescription, LinkSpeed | Format-Table -AutoSize" >> system_health.txt
+
+REM Critical Services
+echo. >> system_health.txt
+echo CRITICAL SERVICES STATUS >> system_health.txt
+echo ----------------------- >> system_health.txt
+powershell -Command "Get-Service | Where-Object {$_.Name -in 'wuauserv','WinDefend','mpssvc','DiagTrack','spooler'} | Select-Object DisplayName, Status, StartType | Format-Table -AutoSize" >> system_health.txt
+
+REM Recent System Events
+echo. >> system_health.txt
+echo RECENT CRITICAL EVENTS >> system_health.txt
+echo --------------------- >> system_health.txt
+powershell -Command "Get-WinEvent -FilterHashtable @{LogName='System'; Level=1,2} -MaxEvents 10 | Select-Object TimeCreated, LevelDisplayName, Message | Format-Table -AutoSize -Wrap" >> system_health.txt
+
+REM Performance Metrics
+echo. >> system_health.txt
+echo PERFORMANCE METRICS >> system_health.txt
+echo ------------------- >> system_health.txt
+powershell -Command "$perf = Get-Counter '\Processor(_Total)\% Processor Time','\Memory\Available MBytes','\PhysicalDisk(_Total)\% Disk Time','\Network Interface(*)\Bytes Total/sec' -ErrorAction SilentlyContinue; $perf.CounterSamples | Select-Object Path,CookedValue | Format-Table -AutoSize" >> system_health.txt
+
+REM Boot Performance
+echo. >> system_health.txt
+echo BOOT PERFORMANCE >> system_health.txt
+echo ---------------- >> system_health.txt
+powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object LastBootUpTime, @{Name='Uptime(Days)';Expression={[math]::Round((New-TimeSpan -Start $_.LastBootUpTime).TotalDays, 2)}} | Format-Table -AutoSize" >> system_health.txt
+
+echo Report generated successfully. Opening report...
+type system_health.txt
+pause
+goto MainMenu
+
+:Tool_CombinedDiagnostics
+echo Running Combined Diagnostics Suite...
+echo Creating reports directory...
+if not exist "diagnostic_reports" mkdir diagnostic_reports
+cd diagnostic_reports
+
+echo ---------------------------------------- > index.html
+echo Combined Diagnostic Reports - %date% %time% >> index.html
+echo ---------------------------------------- >> index.html
+echo ^<html^>^<body^> >> index.html
+echo ^<h1^>Diagnostic Reports Index^</h1^> >> index.html
+echo ^<ul^> >> index.html
+
+REM Run System Health Report
+call :Tool_SystemHealthReport
+echo ^<li^>^<a href="system_health.txt"^>System Health Report^</a^>^</li^> >> index.html
+
+REM Run Hardware Diagnostics
+call :Tool_HardwareDiagnostics
+echo ^<li^>^<a href="hardware_report.txt"^>Hardware Diagnostic Report^</a^>^</li^> >> index.html
+
+REM Run Driver Health Analysis
+call :Tool_DriverHealth
+echo ^<li^>^<a href="driver_health.txt"^>Driver Health Report^</a^>^</li^> >> index.html
+
+REM Run Performance Analysis
+call :Tool_PerformanceAnalysis
+echo ^<li^>^<a href="performance_analysis.txt"^>Performance Analysis Report^</a^>^</li^> >> index.html
+
+REM Run Security Scan
+call :Tool_SecurityScan
+echo ^<li^>^<a href="security_audit.txt"^>Security Audit Report^</a^>^</li^> >> index.html
+
+REM Run Network Diagnostics
+call :Tool005
+echo ^<li^>^<a href="network_report.txt"^>Network Diagnostic Report^</a^>^</li^> >> index.html
+
+echo ^</ul^> >> index.html
+echo ^<p^>Reports generated on: %date% %time%^</p^> >> index.html
+echo ^</body^>^</html^> >> index.html
+
+start index.html
+cd ..
+echo All diagnostic reports have been generated. Opening index...
+pause
+goto MainMenu
+
+:Tool_ServiceAnalysis
+echo Running Windows Service Analysis...
+echo ---------------------------------------- > service_analysis.txt
+echo Windows Service Analysis - %date% %time% >> service_analysis.txt
+echo ---------------------------------------- >> service_analysis.txt
+
+REM Get all services with their dependencies
+echo SERVICE DEPENDENCY MAP >> service_analysis.txt
+echo --------------------- >> service_analysis.txt
+powershell -Command "@{
+    'Critical Services' = Get-Service | Where-Object {$_.Status -eq 'Running' -and $_.StartType -eq 'Automatic'} | ForEach-Object {
+        $svc = $_
+        [PSCustomObject]@{
+            Name = $svc.Name
+            DisplayName = $svc.DisplayName
+            Status = $svc.Status
+            Dependencies = ($svc.DependentServices | Select-Object -ExpandProperty Name) -join ', '
+            RequiredServices = ($svc.RequiredServices | Select-Object -ExpandProperty Name) -join ', '
+        }
+    }
+} | Format-List" >> service_analysis.txt
+
+REM Service Performance Impact
+echo. >> service_analysis.txt
+echo SERVICE PERFORMANCE IMPACT >> service_analysis.txt
+echo ------------------------- >> service_analysis.txt
+powershell -Command "Get-WmiObject Win32_Service | ForEach-Object {
+    $proc = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue
+    if ($proc) {
+        [PSCustomObject]@{
+            ServiceName = $_.Name
+            DisplayName = $_.DisplayName
+            CPUTime = $proc.CPU
+            MemoryUsage = [math]::Round($proc.WorkingSet64/1MB, 2)
+            ThreadCount = $proc.Threads.Count
+            HandleCount = $proc.HandleCount
+        }
+    }
+} | Sort-Object MemoryUsage -Descending | Format-Table -AutoSize" >> service_analysis.txt
+
+REM Startup Impact Analysis
+echo. >> service_analysis.txt
+echo STARTUP IMPACT ANALYSIS >> service_analysis.txt
+echo ---------------------- >> service_analysis.txt
+powershell -Command "Get-CimInstance Win32_StartupCommand | Select-Object Command,User,Location | Format-Table -AutoSize" >> service_analysis.txt
+
+type service_analysis.txt
+pause
+goto MainMenu
+
+:Tool_StartupAnalysis
+echo Running Startup Programs Impact Assessment...
+echo ---------------------------------------- > startup_analysis.txt
+echo Startup Impact Analysis - %date% %time% >> startup_analysis.txt
+echo ---------------------------------------- >> startup_analysis.txt
+
+REM Get startup programs and their impact
+echo STARTUP PROGRAMS IMPACT >> startup_analysis.txt
+echo --------------------- >> startup_analysis.txt
+powershell -Command "@{
+    'Startup Items' = Get-CimInstance Win32_StartupCommand | ForEach-Object {
+        $item = $_
+        $proc = Get-Process -Name ($item.Command -split '\.' | Select-Object -First 1) -ErrorAction SilentlyContinue
+        [PSCustomObject]@{
+            Name = $item.Name
+            Command = $item.Command
+            Location = $item.Location
+            User = $item.User
+            MemoryImpact = if ($proc) { [math]::Round($proc.WorkingSet64/1MB, 2) } else { 'N/A' }
+            CPUTime = if ($proc) { $proc.CPU } else { 'N/A' }
+        }
+    }
+} | Format-Table -AutoSize" >> startup_analysis.txt
+
+REM Startup Registry Analysis
+echo. >> startup_analysis.txt
+echo STARTUP REGISTRY ENTRIES >> startup_analysis.txt
+echo ----------------------- >> startup_analysis.txt
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> startup_analysis.txt
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" >> startup_analysis.txt
+reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" >> startup_analysis.txt
+reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce" >> startup_analysis.txt
+
+REM Startup Folder Content
+echo. >> startup_analysis.txt
+echo STARTUP FOLDER CONTENT >> startup_analysis.txt
+echo --------------------- >> startup_analysis.txt
+dir "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup" >> startup_analysis.txt
+dir "%ProgramData%\Microsoft\Windows\Start Menu\Programs\StartUp" >> startup_analysis.txt
+
+type startup_analysis.txt
+pause
+goto MainMenu
+
+:Tool_RegistryAnalysis
+echo Running Registry Health Analysis...
+echo ---------------------------------------- > registry_analysis.txt
+echo Registry Health Analysis - %date% %time% >> registry_analysis.txt
+echo ---------------------------------------- >> registry_analysis.txt
+
+REM Registry Size Analysis
+echo REGISTRY SIZE ANALYSIS >> registry_analysis.txt
+echo --------------------- >> registry_analysis.txt
+reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management" /v "Paged Pool Size" >> registry_analysis.txt
+reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management" /v "Non Paged Pool Size" >> registry_analysis.txt
+
+REM Check for common registry issues
+echo. >> registry_analysis.txt
+echo REGISTRY HEALTH CHECK >> registry_analysis.txt
+echo -------------------- >> registry_analysis.txt
+powershell -Command "@{
+    'Registry Max Size' = Get-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control' -Name 'RegistrySizeLimit' -ErrorAction SilentlyContinue
+    'Registry Quota Usage' = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SeCEdit\Reg' -ErrorAction SilentlyContinue
+} | Format-List" >> registry_analysis.txt
+
+REM User Profile Registry Analysis
+echo. >> registry_analysis.txt
+echo USER PROFILE REGISTRY ANALYSIS >> registry_analysis.txt
+echo ---------------------------- >> registry_analysis.txt
+reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList" >> registry_analysis.txt
+
+REM Common Problem Areas
+echo. >> registry_analysis.txt
+echo COMMON PROBLEM AREAS CHECK >> registry_analysis.txt
+echo ------------------------ >> registry_analysis.txt
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "PendingFileRenameOperations" >> registry_analysis.txt 2>nul
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" >> registry_analysis.txt
+
+type registry_analysis.txt
+pause
+goto MainMenu
+
+:Tool_MasterDiagnostic
+echo Running Master System Diagnostic...
+echo Creating master diagnostic directory...
+if not exist "master_diagnostic" mkdir master_diagnostic
+cd master_diagnostic
+
+echo ---------------------------------------- > master_report.html
+echo Master System Diagnostic Report - %date% %time% >> master_report.html
+echo ---------------------------------------- >> master_report.html
+echo ^<html^>^<head^> >> master_report.html
+echo ^<style^> >> master_report.html
+echo body { font-family: Arial; margin: 40px; } >> master_report.html
+echo .section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; } >> master_report.html
+echo .warning { color: red; } >> master_report.html
+echo .ok { color: green; } >> master_report.html
+echo ^</style^> >> master_report.html
+echo ^</head^>^<body^> >> master_report.html
+echo ^<h1^>Master System Diagnostic Report^</h1^> >> master_report.html
+
+REM Run all diagnostic tools and integrate results
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>System Health Summary^</h2^> >> master_report.html
+call :Tool_SystemHealthReport
+powershell -Command "Get-Content system_health.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Hardware Diagnostics^</h2^> >> master_report.html
+call :Tool_HardwareDiagnostics
+powershell -Command "Get-Content hardware_report.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Performance Analysis^</h2^> >> master_report.html
+call :Tool_PerformanceAnalysis
+powershell -Command "Get-Content performance_analysis.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Security Assessment^</h2^> >> master_report.html
+call :Tool_SecurityScan
+powershell -Command "Get-Content security_audit.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Driver Analysis^</h2^> >> master_report.html
+call :Tool_DriverHealth
+powershell -Command "Get-Content driver_health.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Service Analysis^</h2^> >> master_report.html
+call :Tool_ServiceAnalysis
+powershell -Command "Get-Content service_analysis.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Startup Impact Analysis^</h2^> >> master_report.html
+call :Tool_StartupAnalysis
+powershell -Command "Get-Content startup_analysis.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Registry Health Analysis^</h2^> >> master_report.html
+call :Tool_RegistryAnalysis
+powershell -Command "Get-Content registry_analysis.txt | ForEach-Object { $_ -replace '^(.+)$', '<p>$1</p>' }" >> master_report.html
+echo ^</div^> >> master_report.html
+
+REM Generate Executive Summary
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Executive Summary^</h2^> >> master_report.html
+powershell -Command "@{
+    'System Health' = if ((Get-WmiObject Win32_ComputerSystem).Status -eq 'OK') {'OK'} else {'Check Required'}
+    'Memory Usage' = if ((Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue -gt 500) {'OK'} else {'Warning'}
+    'Disk Health' = if ((Get-PhysicalDisk).HealthStatus -eq 'Healthy') {'OK'} else {'Warning'}
+    'Network Status' = if ((Get-NetAdapter | Where-Object Status -eq 'Up').Count -gt 0) {'OK'} else {'Warning'}
+    'Security Status' = if ((Get-MpComputerStatus).RealTimeProtectionEnabled) {'OK'} else {'Warning'}
+    'Driver Health' = if ((Get-WmiObject Win32_PnPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0}).Count -eq 0) {'OK'} else {'Warning'}
+} | ForEach-Object { foreach ($item in $_.GetEnumerator()) {
+    if ($item.Value -eq 'OK') {
+        '<p><strong>' + $item.Key + ':</strong> <span class=\"ok\">' + $item.Value + '</span></p>'
+    } else {
+        '<p><strong>' + $item.Key + ':</strong> <span class=\"warning\">' + $item.Value + '</span></p>'
+    }
+}}" >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^<div class="section"^> >> master_report.html
+echo ^<h2^>Recommendations^</h2^> >> master_report.html
+echo ^<ul^> >> master_report.html
+powershell -Command "@{
+    'Memory' = if ((Get-Counter '\Memory\Available MBytes').CounterSamples.CookedValue -lt 500) {'Consider memory upgrade or closing unnecessary applications'} else {''}
+    'Disk' = if ((Get-PhysicalDisk | Where-Object MediaType -eq 'HDD').Count -gt 0) {'Consider upgrading to SSD for better performance'} else {''}
+    'Updates' = if ((Get-HotFix | Where-Object {$_.InstalledOn -gt (Get-Date).AddDays(-30)}).Count -eq 0) {'System updates may be needed'} else {''}
+    'Security' = if (!(Get-MpComputerStatus).RealTimeProtectionEnabled) {'Enable real-time protection'} else {''}
+} | ForEach-Object { foreach ($item in $_.GetEnumerator()) {
+    if ($item.Value) { '<li>' + $item.Value + '</li>' }
+}}" >> master_report.html
+echo ^</ul^> >> master_report.html
+echo ^</div^> >> master_report.html
+
+echo ^</body^>^</html^> >> master_report.html
+
+start master_report.html
+cd ..
+echo Master diagnostic report has been generated and opened in your browser.
+pause
+goto MainMenu
+
 :Exit
 cls
-echo Exiting Combined Tools.
-exit
-
+echo Logging out at %date% %time% >> "%LOGFILE%"
+echo Thank you for using Combined Tools.
+echo.
+echo Press any key to exit...
+pause >nul
+endlocal
+exit /b 0
 
 :: Tool Definitions (Tools 1-200 - already defined previously)
 :Tool001
-echo Running Tool 001: Run Antivirus Scan...
-start "" "%ProgramFiles%\Windows Defender\MSASCui.exe" -FullScan
+echo Running Tool 001: Enhanced System Security Scan...
+echo ---------------------------------------- > security_scan.txt
+echo Security Scan Report - %date% %time% >> security_scan.txt
+echo ---------------------------------------- >> security_scan.txt
+
+REM Check Windows Defender
+echo Checking Windows Defender Status... >> security_scan.txt
+powershell -Command "Get-MpComputerStatus | Select-Object AMRunningMode,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated" >> security_scan.txt
+
+REM Check for critical Windows updates
+echo. >> security_scan.txt
+echo Checking Windows Updates... >> security_scan.txt
+powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 5 HotFixID,InstalledOn,Description" >> security_scan.txt
+
+REM Check firewall status
+echo. >> security_scan.txt
+echo Checking Firewall Status... >> security_scan.txt
+netsh advfirewall show allprofiles state >> security_scan.txt
+
+REM Run quick scan
+echo. >> security_scan.txt
+echo Initiating Quick Scan... >> security_scan.txt
+"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1 >> security_scan.txt
+
+echo Security scan complete. Results saved to security_scan.txt
+type security_scan.txt
 pause
 goto MainMenu
 
 :Tool002
-echo Running Tool 002: Check CPU Usage...
-wmic cpu get loadpercentage
+echo Running Tool 002: Enhanced Performance Monitor...
+echo ---------------------------------------- > performance_monitor.txt
+echo Performance Monitor Report - %date% %time% >> performance_monitor.txt
+echo ---------------------------------------- >> performance_monitor.txt
+
+REM CPU Usage over 5 seconds
+echo Monitoring CPU Usage... >> performance_monitor.txt
+for /L %%i in (1,1,5) do (
+    wmic cpu get loadpercentage | find /v "LoadPercentage" >> performance_monitor.txt
+    timeout /t 1 /nobreak >nul
+)
+
+REM Memory Usage
+echo. >> performance_monitor.txt
+echo Memory Usage: >> performance_monitor.txt
+powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='Memory Used(GB)';Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1MB, 2)}}, @{Name='Memory Free(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB, 2)}}" >> performance_monitor.txt
+
+REM Disk Usage
+echo. >> performance_monitor.txt
+echo Disk Usage: >> performance_monitor.txt
+powershell -Command "Get-Volume | Where-Object {$_.DriveLetter} | Select-Object DriveLetter, @{Name='Size(GB)';Expression={[math]::Round($_.Size/1GB,2)}}, @{Name='FreeSpace(GB)';Expression={[math]::Round($_.SizeRemaining/1GB,2)}}" >> performance_monitor.txt
+
+type performance_monitor.txt
 pause
 goto MainMenu
 
 :Tool003
-echo Running Tool 003: Check Memory Usage...
-wmic OS get FreePhysicalMemory, TotalVisibleMemorySize /Value
+echo Running Tool 003: Advanced Memory Analysis...
+echo ---------------------------------------- > memory_analysis.txt
+echo Memory Analysis Report - %date% %time% >> memory_analysis.txt
+echo ---------------------------------------- >> memory_analysis.txt
+
+REM Physical Memory Status
+echo Physical Memory Information: >> memory_analysis.txt
+powershell -Command "Get-CimInstance Win32_PhysicalMemory | Format-Table Manufacturer,Capacity,Speed,DeviceLocator -AutoSize" >> memory_analysis.txt
+
+REM Memory Usage by Process
+echo. >> memory_analysis.txt
+echo Top Memory-Consuming Processes: >> memory_analysis.txt
+powershell -Command "Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 ProcessName,@{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet/1MB,2)}} | Format-Table -AutoSize" >> memory_analysis.txt
+
+REM Page File Usage
+echo. >> memory_analysis.txt
+echo Page File Usage: >> memory_analysis.txt
+powershell -Command "Get-CimInstance Win32_PageFileUsage | Select-Object Name,CurrentUsage,PeakUsage" >> memory_analysis.txt
+
+type memory_analysis.txt
 pause
 goto MainMenu
 
 :Tool004
-echo Running Tool 004: List Running Processes...
-tasklist
+echo Running Tool 004: Enhanced Process Analysis...
+echo ---------------------------------------- > process_analysis.txt
+echo Process Analysis Report - %date% %time% >> process_analysis.txt
+echo ---------------------------------------- >> process_analysis.txt
+
+REM List all running processes with details
+echo Running Processes: >> process_analysis.txt
+powershell -Command "Get-Process | Sort-Object CPU -Descending | Select-Object ProcessName,Id,@{Name='CPU(s)';Expression={[math]::Round($_.CPU,2)}},@{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet/1MB,2)}},StartTime | Format-Table -AutoSize" >> process_analysis.txt
+
+REM High CPU processes
+echo. >> process_analysis.txt
+echo High CPU Usage Processes: >> process_analysis.txt
+powershell -Command "Get-Process | Where-Object {$_.CPU -gt 10} | Select-Object ProcessName,Id,CPU | Format-Table -AutoSize" >> process_analysis.txt
+
+REM Critical system processes status
+echo. >> process_analysis.txt
+echo Critical System Processes: >> process_analysis.txt
+powershell -Command "Get-Process -Name svchost,lsass,csrss,winlogon,system | Select-Object ProcessName,Id,@{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet/1MB,2)}} | Format-Table -AutoSize" >> process_analysis.txt
+
+type process_analysis.txt
 pause
 goto MainMenu
 
 :Tool005
-echo Running Tool 005: Reset Network Settings...
-netsh winsock reset & netsh int ip reset
+echo Running Tool 005: Advanced Network Diagnostics...
+echo ---------------------------------------- > network_report.txt
+echo Network Diagnostic Report - %date% %time% >> network_report.txt
+echo ---------------------------------------- >> network_report.txt
+
+REM Test internet connectivity first
+ping -n 1 8.8.8.8 >nul 2>&1
+if errorlevel 1 (
+    echo WARNING: No internet connection detected. Some tests may fail. >> network_report.txt
+    echo. >> network_report.txt
+)
+
+REM Network adapter information
+echo Network Adapters: >> network_report.txt
+powershell -Command "Get-NetAdapter | Select-Object Name,InterfaceDescription,Status,LinkSpeed | Format-Table -AutoSize" >> network_report.txt
+
+REM IP Configuration
+echo. >> network_report.txt
+echo IP Configuration: >> network_report.txt
+ipconfig /all >> network_report.txt
+
+REM DNS Cache
+echo. >> network_report.txt
+echo DNS Cache: >> network_report.txt
+ipconfig /displaydns | findstr "Record Name" >> network_report.txt
+
+REM Active Connections
+echo. >> network_report.txt
+echo Active Connections: >> network_report.txt
+netstat -ano | findstr "ESTABLISHED" >> network_report.txt
+
+REM Network Performance Test
+echo. >> network_report.txt
+echo Network Performance Test: >> network_report.txt
+ping -n 10 8.8.8.8 | findstr "Average" >> network_report.txt
+
+REM Reset network if requested
+set /p "reset=Would you like to reset network settings? (Y/N): "
+if /i "%reset%"=="Y" (
+    echo. >> network_report.txt
+    echo Resetting Network Settings... >> network_report.txt
+    netsh winsock reset >> network_report.txt
+    netsh int ip reset >> network_report.txt
+    ipconfig /release >> network_report.txt
+    ipconfig /renew >> network_report.txt
+    ipconfig /flushdns >> network_report.txt
+    echo Network settings have been reset. A restart may be required. >> network_report.txt
+)
+
+type network_report.txt
 pause
 goto MainMenu
 
 :Tool006
-echo Running Tool 006: Run Power Troubleshooter...
-msdt.exe -id PowerDiagnostic
+echo Running Tool 006: Enhanced Website Connectivity Test...
+echo ---------------------------------------- > connectivity_report.txt
+echo Website Connectivity Report - %date% %time% >> connectivity_report.txt
+echo ---------------------------------------- >> connectivity_report.txt
+
+set /p "website=Enter website to test (e.g., google.com): "
+if "%website%"=="" set website=google.com
+
+REM DNS Resolution
+echo DNS Resolution Test: >> connectivity_report.txt
+nslookup %website% >> connectivity_report.txt
+
+REM Ping Test
+echo. >> connectivity_report.txt
+echo Ping Test: >> connectivity_report.txt
+ping -n 5 %website% >> connectivity_report.txt
+
+REM Traceroute
+echo. >> connectivity_report.txt
+echo Route Analysis: >> connectivity_report.txt
+tracert -d -h 15 %website% >> connectivity_report.txt
+
+REM HTTP Response
+echo. >> connectivity_report.txt
+echo HTTP Response Test: >> connectivity_report.txt
+powershell -Command "try { $response = Invoke-WebRequest -Uri 'http://%website%' -Method Head -TimeoutSec 5; 'Status: ' + $response.StatusCode } catch { 'Error: ' + $_.Exception.Message }" >> connectivity_report.txt
+
+type connectivity_report.txt
 pause
 goto MainMenu
 
 :Tool007
-echo Running Tool 007: Show IP Configuration...
-ipconfig /all
+echo Running Tool 007: Comprehensive Network Configuration Analysis...
+echo ---------------------------------------- > network_config.txt
+echo Network Configuration Report - %date% %time% >> network_config.txt
+echo ---------------------------------------- >> network_config.txt
+
+REM Network Adapters
+echo Network Adapters: >> network_config.txt
+powershell -Command "Get-NetAdapter | Format-Table Name,InterfaceDescription,Status,LinkSpeed -AutoSize" >> network_config.txt
+
+REM IP Configuration
+echo. >> network_config.txt
+echo IP Configuration: >> network_config.txt
+ipconfig /all >> network_config.txt
+
+REM Routing Table
+echo. >> network_config.txt
+echo Routing Table: >> network_config.txt
+route print >> network_config.txt
+
+REM Network Shares
+echo. >> network_config.txt
+echo Network Shares: >> network_config.txt
+net share >> network_config.txt
+
+REM Firewall Status
+echo. >> network_config.txt
+echo Firewall Status: >> network_config.txt
+netsh advfirewall show allprofiles state >> network_config.txt
+
+REM Network Category
+echo. >> network_config.txt
+echo Network Category: >> network_config.txt
+powershell -Command "Get-NetConnectionProfile | Format-Table Name,NetworkCategory,IPv4Connectivity,IPv6Connectivity" >> network_config.txt
+
+type network_config.txt
 pause
 goto MainMenu
 
@@ -2863,12 +3784,21 @@ powershell "Get-MpPreference | Select-Object EnableControlledFolderAccess"
 pause
 goto SecurityCenterMenu
 
+:SponsorshipMenu
+cls
+echo.
+echo Sponsorship
+echo -----------
+echo If you are interested in sponsoring this tool,
+echo your link can be placed in this menu!
+echo.
+echo Website: https://www.jtgsystems.com
+echo.
+pause
+goto MainMenu
+
 :InvalidChoice
 echo Invalid choice. Please try again.
-pause
-goto :%LastMenu%
-
-:Exit
-cls
-echo Exiting Combined Tools.
-exit
+echo Invalid menu choice at %date% %time% >> "%LOGFILE%"
+timeout /t 2 >nul
+goto :MainMenu
