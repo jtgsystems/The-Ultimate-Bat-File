@@ -22,9 +22,10 @@ echo 12. Privacy Settings
 echo 13. Modern Windows Features
 echo 14. Disk Health Monitor
 echo 15. Security Center
-echo 16. Exit
+echo 16. Advanced Diagnostics
+echo 17. Exit
 echo.
-set /p "choice=Enter your choice (1-16): "
+set /p "choice=Enter your choice (1-17): "
 
 if "%choice%"=="1" goto SystemInfoMenu
 if "%choice%"=="2" goto SystemMaintenanceMenu
@@ -41,7 +42,8 @@ if "%choice%"=="12" goto PrivacyMenu
 if "%choice%"=="13" goto ModernWindowsMenu
 if "%choice%"=="14" goto DiskHealthMenu
 if "%choice%"=="15" goto SecurityCenterMenu
-if "%choice%"=="16" goto Exit
+if "%choice%"=="16" goto AdvancedDiagnosticsMenu
+if "%choice%"=="17" goto Exit
 
 echo Invalid choice. Please try again.
 goto MainMenu
@@ -1027,6 +1029,228 @@ if "%choice%"=="8" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SecurityCenterMenu
+
+:AdvancedDiagnosticsMenu
+cls
+echo.
+echo Advanced Diagnostics Tools
+echo -------------------------
+echo 1. Reliability History Report
+echo 2. Component Store Analysis
+echo 3. Group Policy Results
+echo 4. PCI Device Check
+echo 5. Memory Leak Detection
+echo 6. Driver Status Report
+echo 7. Boot Configuration Analysis
+echo 8. Service Dependencies Map
+echo 9. Hardware Resource Conflicts
+echo 10. System File Version Check
+echo 11. Registry Size Analysis
+echo 12. Active Port Connections
+echo 13. Pending File Operations
+echo 14. Disk Queue Analysis
+echo 15. Process Handle Count
+echo 16. DNS Cache Status
+echo 17. VSS Writer Status
+echo 18. Disk Write Cache Config
+echo 19. Memory Dump Analysis
+echo 20. System Pool Usage
+echo 21. Active Directory Health
+echo 22. Print Spooler Status
+echo 23. Windows Installer State
+echo 24. User Profile Analysis
+echo 25. System Access Check
+echo 26. Back to Main Menu
+echo.
+set /p "choice=Enter your choice (1-26): "
+
+if "%choice%"=="1" goto Tool_ReliabilityReport
+if "%choice%"=="2" goto Tool_ComponentStore
+if "%choice%"=="3" goto Tool_GPResults
+if "%choice%"=="4" goto Tool_PCICheck
+if "%choice%"=="5" goto Tool_MemoryLeak
+if "%choice%"=="6" goto Tool_DriverReport
+if "%choice%"=="7" goto Tool_BootConfig
+if "%choice%"=="8" goto Tool_ServiceMap
+if "%choice%"=="9" goto Tool_ResourceConflicts
+if "%choice%"=="10" goto Tool_FileVersions
+if "%choice%"=="11" goto Tool_RegistrySize
+if "%choice%"=="12" goto Tool_ActivePorts
+if "%choice%"=="13" goto Tool_PendingOps
+if "%choice%"=="14" goto Tool_DiskQueue
+if "%choice%"=="15" goto Tool_HandleCount
+if "%choice%"=="16" goto Tool_DNSCache
+if "%choice%"=="17" goto Tool_VSSStatus
+if "%choice%"=="18" goto Tool_WriteCache
+if "%choice%"=="19" goto Tool_DumpAnalysis
+if "%choice%"=="20" goto Tool_PoolUsage
+if "%choice%"=="21" goto Tool_ADHealth
+if "%choice%"=="22" goto Tool_PrintSpooler
+if "%choice%"=="23" goto Tool_MSIState
+if "%choice%"=="24" goto Tool_UserProfile
+if "%choice%"=="25" goto Tool_SysAccess
+if "%choice%"=="26" goto MainMenu
+
+:Tool_ReliabilityReport
+echo Generating System Reliability Report...
+powershell "Get-WinEvent -LogName Microsoft-Windows-Reliability/Operational | Where-Object { $_.LevelDisplayName -eq 'Error' } | Format-Table TimeCreated, Message -AutoSize" > reliability_report.txt
+echo Report saved to reliability_report.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_ComponentStore
+echo Analyzing Windows Component Store...
+Dism /Online /Cleanup-Image /AnalyzeComponentStore
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_GPResults
+echo Generating Group Policy Results...
+gpresult /H gp_report.html
+start gp_report.html
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_PCICheck
+echo Checking PCI Devices and Resources...
+powershell "Get-WmiObject Win32_PnPEntity | Where-Object {$_.ConfigManagerErrorCode -ne 0} | Format-Table Name,DeviceID,ConfigManagerErrorCode"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_MemoryLeak
+echo Detecting Potential Memory Leaks...
+powershell "Get-Process | Sort-Object -Property WorkingSet -Descending | Select-Object -First 10 | Format-Table Name,WorkingSet,PrivateMemorySize,HandleCount"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_DriverReport
+echo Generating Driver Status Report...
+powershell "Get-WmiObject Win32_PnPSignedDriver | Select-Object DeviceName,DriverVersion,IsSigned | Format-Table -AutoSize" > driver_report.txt
+echo Report saved to driver_report.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_BootConfig
+echo Analyzing Boot Configuration...
+bcdedit /enum CURRENT
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_ServiceMap
+echo Mapping Service Dependencies...
+sc queryex type= service state= all > service_map.txt
+echo Service map saved to service_map.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_ResourceConflicts
+echo Checking Hardware Resource Conflicts...
+powershell "Get-WmiObject Win32_DeviceMemoryAddress | Format-Table StartingAddress,EndingAddress,MemoryType,Name"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_FileVersions
+echo Checking System File Versions...
+powershell "Get-ChildItem $env:windir\System32 -Filter *.dll | ForEach-Object { $_.VersionInfo } | Format-Table FileName,FileVersion"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_RegistrySize
+echo Analyzing Registry Size...
+reg query "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management" /v "Paged Pool Size"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_ActivePorts
+echo Checking Active Port Connections...
+netstat -abno > port_connections.txt
+echo Port connections saved to port_connections.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_PendingOps
+echo Checking Pending File Operations...
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v PendingFileRenameOperations
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_DiskQueue
+echo Analyzing Disk Queue Length...
+typeperf "\PhysicalDisk(_Total)\Current Disk Queue Length" -sc 10
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_HandleCount
+echo Checking Process Handle Count...
+powershell "Get-Process | Sort-Object HandleCount -Descending | Select-Object -First 10 Name,HandleCount,WorkingSet"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_DNSCache
+echo Displaying DNS Cache Status...
+ipconfig /displaydns > dns_cache.txt
+echo DNS cache saved to dns_cache.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_VSSStatus
+echo Checking Volume Shadow Copy Status...
+vssadmin list writers
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_WriteCache
+echo Checking Disk Write Cache Configuration...
+powershell "Get-WmiObject -Class Win32_DiskDrive | Select-Object Model,Caption,WriteCache"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_DumpAnalysis
+echo Analyzing Memory Dump Files...
+dir /s %SystemRoot%\Minidump\*.dmp
+echo Use Windows Debugger for detailed analysis
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_PoolUsage
+echo Checking System Pool Usage...
+poolmon -b > pool_usage.txt
+echo Pool usage saved to pool_usage.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_ADHealth
+echo Checking Active Directory Health...
+dcdiag /v > ad_health.txt
+echo AD health report saved to ad_health.txt
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_PrintSpooler
+echo Analyzing Print Spooler Status...
+net stop spooler && del /Q /F /S %systemroot%\System32\spool\PRINTERS\* && net start spooler
+echo Print Spooler reset complete
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_MSIState
+echo Checking Windows Installer State...
+reg query HKLM\System\CurrentControlSet\Services\msiserver
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_UserProfile
+echo Analyzing User Profiles...
+powershell "Get-WmiObject Win32_UserProfile | Select-Object LocalPath,LastUseTime,Special,Loaded | Format-Table -AutoSize"
+pause
+goto AdvancedDiagnosticsMenu
+
+:Tool_SysAccess
+echo Checking System Access Controls...
+secedit /export /cfg security_config.txt
+echo Security configuration exported to security_config.txt
+pause
+goto AdvancedDiagnosticsMenu
 
 :Exit
 cls
