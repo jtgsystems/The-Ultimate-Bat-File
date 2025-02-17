@@ -630,9 +630,12 @@ echo 17. Check for Windows Task Scheduler
 echo 18. Create Scheduled Task
 echo 19. Delete Scheduled Task
 echo 20. Run Scheduled Task
-echo 21. Back to Main Menu
+echo 21. Hardware Resource Usage
+echo 22. Monitor Color Calibration
+echo 23. System Stability Check
+echo 24. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-21): "
+set /p "choice=Enter your choice (1-24): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -654,11 +657,35 @@ if "%choice%"=="17" goto Tool065
 if "%choice%"=="18" goto Tool066
 if "%choice%"=="19" goto Tool067
 if "%choice%"=="20" goto Tool068
-if "%choice%"=="21" goto MainMenu
+if "%choice%"=="21" goto Tool_HWResources
+if "%choice%"=="22" goto Tool_ColorCal
+if "%choice%"=="23" goto Tool_StabilityCheck
+if "%choice%"=="24" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto PerformanceMenu
 
+:Tool_HWResources
+echo Checking Hardware Resource Usage...
+echo CPU Interrupts and DPC:
+powershell "Get-WmiObject Win32_PerfFormattedData_PerfOS_Processor | Select PercentInterruptTime, PercentDPCTime"
+echo.
+echo PCI Bus Load:
+powershell "Get-WmiObject Win32_PerfFormattedData_PerfOS_Objects | Select MutexRate, ThreadRate"
+pause
+goto PerformanceMenu
+
+:Tool_ColorCal
+echo Launching Monitor Color Calibration...
+dccw.exe
+pause
+goto PerformanceMenu
+
+:Tool_StabilityCheck
+echo Running System Stability Check...
+powershell "Get-WinEvent -FilterHashtable @{LogName='System'; Level=2,3} -MaxEvents 50 | Format-Table TimeCreated,LevelDisplayName,Message -AutoSize"
+pause
+goto PerformanceMenu
 
 :SoftwareMenu
 cls
