@@ -237,9 +237,12 @@ echo 33. Export Critical Event Logs
 echo 34. Create System Restore Point
 echo 35. Create System Image Backup
 echo 36. Network Route Trace
-echo 37. Back to Main Menu
+echo 37. Run DirectX Diagnostic Tool (dxdiag)
+echo 38. Hardware Compatibility Check
+echo 39. System Assessment Tool (WinSAT)
+echo 40. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-37): "
+set /p "choice=Enter your choice (1-40): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -277,7 +280,10 @@ if "%choice%"=="33" goto Tool_EventLog
 if "%choice%"=="34" goto Tool_RestorePoint
 if "%choice%"=="35" goto Tool_SystemImage
 if "%choice%"=="36" goto Tool_NetTrace
-if "%choice%"=="37" goto MainMenu
+if "%choice%"=="37" goto Tool_DXDiag
+if "%choice%"=="38" goto Tool_HWCompat
+if "%choice%"=="39" goto Tool_WinSAT
+if "%choice%"=="40" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto DiagnosticMenu
@@ -326,6 +332,25 @@ tracert %target%
 pause
 goto DiagnosticMenu
 
+:Tool_DXDiag
+echo Running DirectX Diagnostic Tool...
+dxdiag /t dxdiag_report.txt
+echo Report saved to dxdiag_report.txt
+pause
+goto DiagnosticMenu
+
+:Tool_HWCompat
+echo Checking Hardware Compatibility...
+msdt.exe -id DeviceDiagnostic
+pause
+goto DiagnosticMenu
+
+:Tool_WinSAT
+echo Running System Assessment Tool...
+winsat formal
+echo Assessment complete. View results with 'winsat scores'
+pause
+goto DiagnosticMenu
 
 :NetworkingMenu
 cls
@@ -361,9 +386,12 @@ echo 26. Check DNS Servers
 echo 27. Check DHCP Server
 echo 28. Check IP Addresses
 echo 29. Check MAC Addresses
-echo 30. Back to Main Menu
+echo 30. Network Connection Test Suite
+echo 31. View Active TCP Connections
+echo 32. Network Interface Statistics
+echo 33. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-30): "
+set /p "choice=Enter your choice (1-33): "
 
 if "%choice%"=="1" goto Tool006
 if "%choice%"=="2" goto Tool007
@@ -394,11 +422,38 @@ if "%choice%"=="26" goto Tool167
 if "%choice%"=="27" goto Tool168
 if "%choice%"=="28" goto Tool164
 if "%choice%"=="29" goto Tool165
-if "%choice%"=="30" goto MainMenu
+if "%choice%"=="30" goto Tool_NetTest
+if "%choice%"=="31" goto Tool_TCPView
+if "%choice%"=="32" goto Tool_NetStats
+if "%choice%"=="33" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto NetworkingMenu
 
+:Tool_NetTest
+echo Running Network Test Suite...
+echo Testing DNS Resolution...
+nslookup google.com
+echo.
+echo Testing Network Connectivity...
+pathping 8.8.8.8
+echo.
+echo Testing Network Interface...
+netsh interface ipv4 show interfaces
+pause
+goto NetworkingMenu
+
+:Tool_TCPView
+echo Viewing Active TCP Connections...
+netstat -abno
+pause
+goto NetworkingMenu
+
+:Tool_NetStats
+echo Viewing Network Interface Statistics...
+netstat -e -s
+pause
+goto NetworkingMenu
 
 :SecurityMenu
 cls
