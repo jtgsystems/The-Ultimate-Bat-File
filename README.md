@@ -4,6 +4,11 @@ This project was created by John Gallie of JTG SYSTEMS.
 
 🌐 [JTG SYSTEMS Website](https://www.jtgsystems.com)
 
+## Sponsorship 💖
+
+If you find this tool helpful and want to support its development, consider sponsoring us! Your sponsorship will be acknowledged in the main menu of the .bat file with a link to your website. Contact us for sponsorship opportunities!
+
+
 ## Description 📝
 
 This is a powerful and versatile combined tools menu for Windows, meticulously
