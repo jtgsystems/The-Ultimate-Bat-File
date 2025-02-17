@@ -22,9 +22,14 @@ echo 12. Privacy Settings
 echo 13. Modern Windows Features
 echo 14. Disk Health Monitor
 echo 15. Security Center
+  25 |  echo 16. Advanced Diagnostics
+  26 |  echo 17. Sponsorship
+  27 |  echo 18. Exit
 echo 16. Advanced Diagnostics
 echo 17. Exit
 echo.
+  28 |  echo.
+  29 |  set /p "choice=Enter your choice (1-18): "
 set /p "choice=Enter your choice (1-17): "
 
 if "%choice%"=="1" goto SystemInfoMenu
@@ -42,6 +47,9 @@ if "%choice%"=="12" goto PrivacyMenu
 if "%choice%"=="13" goto ModernWindowsMenu
 if "%choice%"=="14" goto DiskHealthMenu
 if "%choice%"=="15" goto SecurityCenterMenu
+  45 |  if "%choice%"=="16" goto AdvancedDiagnosticsMenu
+  46 |  if "%choice%"=="17" goto SponsorshipMenu
+  47 |  if "%choice%"=="18" goto Exit
 if "%choice%"=="16" goto AdvancedDiagnosticsMenu
 if "%choice%"=="17" goto Exit
 
@@ -1092,6 +1100,21 @@ if "%choice%"=="25" goto Tool_SysAccess
 if "%choice%"=="26" goto MainMenu
 
 :Tool_ReliabilityReport
+1095 | 
+1096 | :SponsorshipMenu
+1097 |  cls
+1098 |  echo.
+1099 |  echo Sponsorship
+1100 |  echo -----------
+1101 |  echo If you are interested in sponsoring this tool,
+1102 |  echo your link can be placed in this menu!
+1103 |  echo.
+1104 |  echo Website: https://www.jtgsystems.com
+1105 |  echo.
+1106 |  pause
+1107 |  goto MainMenu
+1108 | 
+1096 | :Tool_ReliabilityReport
 echo Generating System Reliability Report...
 powershell "Get-WinEvent -LogName Microsoft-Windows-Reliability/Operational | Where-Object { $_.LevelDisplayName -eq 'Error' } | Format-Table TimeCreated, Message -AutoSize" > reliability_report.txt
 echo Report saved to reliability_report.txt
