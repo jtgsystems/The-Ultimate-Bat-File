@@ -231,9 +231,15 @@ echo 27. Run Windows Search Troubleshooter
 echo 28. Run Windows Store Troubleshooter
 echo 29. Run Windows Activation Troubleshooter
 echo 30. Run Windows Backup Troubleshooter
-echo 31. Back to Main Menu
+echo 31. Launch Windows Memory Diagnostic
+echo 32. Open Device Manager
+echo 33. Export Critical Event Logs
+echo 34. Create System Restore Point
+echo 35. Create System Image Backup
+echo 36. Network Route Trace
+echo 37. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-31): "
+set /p "choice=Enter your choice (1-37): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -265,9 +271,59 @@ if "%choice%"=="27" goto Tool091
 if "%choice%"=="28" goto Tool093
 if "%choice%"=="29" goto Tool095
 if "%choice%"=="30" goto Tool097
-if "%choice%"=="31" goto MainMenu
+if "%choice%"=="31" goto Tool_MemDiag
+if "%choice%"=="32" goto Tool_DevMgr
+if "%choice%"=="33" goto Tool_EventLog
+if "%choice%"=="34" goto Tool_RestorePoint
+if "%choice%"=="35" goto Tool_SystemImage
+if "%choice%"=="36" goto Tool_NetTrace
+if "%choice%"=="37" goto MainMenu
 
 echo Invalid choice. Please try again.
+goto DiagnosticMenu
+
+:Tool_MemDiag
+echo Running Windows Memory Diagnostic...
+mdsched.exe
+echo Windows Memory Diagnostic has been scheduled to run on next restart.
+pause
+goto DiagnosticMenu
+
+:Tool_DevMgr
+echo Opening Device Manager...
+start devmgmt.msc
+pause
+goto DiagnosticMenu
+
+:Tool_EventLog
+echo Exporting Critical Event Logs...
+wevtutil epl System SystemLog.evtx
+wevtutil epl Application AppLog.evtx
+wevtutil qe System /q:"*[System[(Level=1 or Level=2)]]" /f:text > CriticalSystemEvents.txt
+wevtutil qe Application /q:"*[System[(Level=1 or Level=2)]]" /f:text > CriticalAppEvents.txt
+echo Logs exported to current directory.
+pause
+goto DiagnosticMenu
+
+:Tool_RestorePoint
+echo Creating System Restore Point...
+powershell -Command "Checkpoint-Computer -Description 'Manual Restore Point' -RestorePointType 'MODIFY_SETTINGS'"
+echo System Restore Point created.
+pause
+goto DiagnosticMenu
+
+:Tool_SystemImage
+echo Creating System Image Backup...
+wbadmin start backup -backupTarget:C: -include:C: -allCritical -quiet
+echo System Image Backup initiated.
+pause
+goto DiagnosticMenu
+
+:Tool_NetTrace
+echo Running Network Route Trace...
+set /p "target=Enter target address to trace: "
+tracert %target%
+pause
 goto DiagnosticMenu
 
 
