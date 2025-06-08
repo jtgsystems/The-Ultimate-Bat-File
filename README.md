@@ -1,231 +1,309 @@
-# THE ULTIMATE BAT FILE 🚀
+# The Ultimate Bat File - Enhanced v2.0 🚀
 
-This project was created by John Gallie of JTG SYSTEMS.
+**Professional Windows System Management Suite**
 
-🌐 [JTG SYSTEMS Website](https://www.jtgsystems.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Windows](https://img.shields.io/badge/Platform-Windows-blue.svg)](https://www.microsoft.com/windows)
+[![Version](https://img.shields.io/badge/Version-2.0-green.svg)](https://github.com/jtgsystems/The-Ultimate-Bat-File)
 
-## Sponsorship 💖
+Created by **John Gallie** of **[JTG Systems](https://www.jtgsystems.com)**
 
-If you find this tool helpful and want to support its development, consider sponsoring us! Your sponsorship will be acknowledged in the main menu of the .bat file with a link to your website. Contact us for sponsorship opportunities!
+## 🌟 What's New in v2.0
 
+### ✨ Enhanced Features
+- **Modular Architecture** - Clean, organized codebase with separated modules
+- **Advanced Error Handling** - Robust error checking and recovery mechanisms  
+- **Modern PowerShell Integration** - Leverages PowerShell for enhanced capabilities
+- **Comprehensive Logging** - Detailed activity logs with timestamps
+- **Security Enhancements** - Improved UAC handling and privilege management
+- **System Optimization Suite** - Advanced performance optimization tools
+- **Professional UI** - Enhanced visual interface with better organization
 
-## Description 📝
+### 🔧 Core Improvements
+- Removed legacy WMIC dependencies where possible
+- Added Windows 11 compatibility and modern feature support
+- Implemented modular design for easier maintenance
+- Enhanced system information gathering with detailed hardware analysis
+- Added comprehensive backup and restore functionality
+- Improved network diagnostics and optimization tools
 
-This is a powerful and versatile combined tools menu for Windows, meticulously
-crafted by John Gallie of JTG SYSTEMS. It provides a comprehensive suite of
-utilities, offering seamless access to a wide array of system functionalities.
-This all-in-one solution empowers users to effortlessly manage and optimize
-their Windows environment. The menu grants easy access to essential tools for
-system information, maintenance, and diagnostics, including tools for
-networking, security, troubleshooting, performance monitoring, and software
-management. Furthermore, it incorporates features for managing Windows access,
-WiFi networks, app installations, and privacy settings. The menu also includes
-modern Windows features and a disk health monitor, making it an indispensable
-resource for both novice and advanced Windows users. This tool is designed to
-streamline your workflow and enhance your control over your Windows operating
-system.
+## 📋 Features Overview
 
-## Disclaimer ⚠️
+### 🖥️ System Management
+- **System Information Tools** - Complete hardware and software inventory
+- **System Maintenance** - Automated cleanup, optimization, and health checks
+- **Diagnostic Tools** - Comprehensive system analysis and troubleshooting
+- **Performance Monitor** - Real-time system performance metrics
 
-This project is provided "as is" without any warranties, express or implied. Use
-at your own risk.
+### 🔐 Security & Privacy
+- **Security Center** - Windows Defender, Firewall, and security policy management
+- **Privacy Settings** - Comprehensive privacy control and app permissions
+- **BitLocker Management** - Drive encryption status and configuration
+- **User Account Control** - UAC settings and security configurations
 
-## License 📜
+### 🌐 Network & Connectivity
+- **WiFi Network Manager** - Complete wireless network management
+- **Network Diagnostics** - Advanced network troubleshooting tools
+- **Firewall Management** - Rule configuration and status monitoring
+- **VPN & Proxy Settings** - Connection status and configuration
 
+### 💿 Storage & Optimization
+- **Disk Health Monitor** - SMART status, health reports, and error checking
+- **Storage Analysis** - Detailed disk usage and space management
+- **System Optimization** - Performance tuning and resource optimization
+- **Backup & Restore** - Comprehensive data protection tools
+
+### 🔧 Advanced Tools
+- **Modern Windows Features** - Windows Hello, Virtual Desktops, Gaming features
+- **Software Management** - Installation, removal, and feature management
+- **Automation Scripts** - Custom automation and batch operations
+- **Registry Tools** - Safe registry backup, optimization, and management
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Windows 10/11 (Windows 8.1+ supported with limitations)
+- Administrative privileges
+- PowerShell 5.0+ (included with Windows 10/11)
+
+### Installation
+
+#### Method 1: Direct Download
+1. Download the latest release from [GitHub Releases](https://github.com/jtgsystems/The-Ultimate-Bat-File/releases)
+2. Extract to your desired location
+3. Right-click `src/core/ultimate-tools-enhanced.bat` and select "Run as administrator"
+
+#### Method 2: Git Clone
+```bash
+git clone https://github.com/jtgsystems/The-Ultimate-Bat-File.git
+cd The-Ultimate-Bat-File
+# Right-click src/core/ultimate-tools-enhanced.bat and run as administrator
+```
+
+### First Run
+1. The script will automatically request administrative privileges
+2. System requirements will be verified
+3. The main menu will display with all available tools
+4. Select any option by entering the corresponding number
+
+## 📁 Project Structure
+
+```
+The-Ultimate-Bat-File/
+├── src/
+│   ├── core/                    # Core application files
+│   │   └── ultimate-tools-enhanced.bat
+│   ├── modules/                 # Feature modules
+│   │   ├── system-info.bat
+│   │   ├── maintenance.bat
+│   │   ├── security.bat
+│   │   └── networking.bat
+│   ├── utilities/               # Utility scripts
+│   │   ├── system-optimization.bat
+│   │   ├── backup-tools.bat
+│   │   └── diagnostics.bat
+│   └── docs/                    # Documentation
+├── config/                      # Configuration files
+├── logs/                        # Application logs
+├── backups/                     # System backups
+└── README.md
+```
+
+## 🛠️ Usage Guide
+
+### Main Menu Navigation
+The enhanced interface provides organized access to all tools:
+
+```
+┌─ SYSTEM MANAGEMENT ──────────────────────────────────────┐
+│ 1.  System Information      │ 9.   Windows Access Tools  │
+│ 2.  System Maintenance      │ 10.  WiFi Network Manager  │
+│ 3.  Diagnostic Tools        │ 11.  App Management Tools  │
+│ 4.  Networking Tools        │ 12.  Privacy Settings      │
+└─────────────────────────────┴─────────────────────────────┘
+```
+
+### System Information Tools
+- **Complete System Overview** - Comprehensive hardware and software inventory
+- **Hardware Analysis** - Detailed component specifications and status
+- **Performance Metrics** - Real-time CPU, memory, and disk usage
+- **Network Configuration** - Adapter details, IP configuration, and connectivity
+
+### System Maintenance
+- **Disk Cleanup** - Automated temporary file removal and cache clearing
+- **Registry Optimization** - Safe registry cleanup and performance tuning
+- **System File Checker** - Automated SFC and DISM health checks
+- **Service Optimization** - Windows service configuration for performance
+
+### Security Tools
+- **Windows Defender Management** - Real-time protection and scan controls
+- **Firewall Configuration** - Rule management and status monitoring
+- **BitLocker Management** - Drive encryption status and controls
+- **Security Policy Review** - Local security settings and audit policies
+
+## ⚙️ Configuration
+
+### User Configuration
+Create `config/user.conf` to customize behavior:
+
+```batch
+set "CONFIG_THEME=dark"
+set "CONFIG_VERBOSE=true"
+set "CONFIG_AUTO_UPDATE=true"
+set "CONFIG_TELEMETRY=false"
+```
+
+### Logging Configuration
+- Logs are automatically created in `logs/` directory
+- Log files include timestamps and detailed operation tracking
+- Log retention can be configured in the main script
+
+## 🔒 Security & Safety
+
+### Administrative Privileges
+- Script requires admin rights for system-level operations
+- UAC elevation is handled automatically and securely
+- All operations are logged for audit purposes
+
+### Data Protection
+- Registry backups are created before modifications
+- System restore points are created during major changes
+- All operations can be safely reversed
+
+### Safe Operations
+- Read-only operations are clearly marked
+- Destructive operations require confirmation
+- All changes are logged with rollback information
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+**"Access Denied" Errors**
+- Ensure the script is run as administrator
+- Check that UAC is not blocking the elevation request
+- Verify Windows security policies allow script execution
+
+**PowerShell Execution Policy**
+- Run: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+- Or use: `powershell -ExecutionPolicy Bypass -File script.ps1`
+
+**Missing Features on Older Windows**
+- Some features require Windows 10/11
+- Legacy support is provided where possible
+- Check logs for compatibility warnings
+
+### Getting Help
+- Check the logs in `logs/` directory for detailed error information
+- Review the documentation in `src/docs/`
+- Submit issues on [GitHub Issues](https://github.com/jtgsystems/The-Ultimate-Bat-File/issues)
+
+## 🤝 Contributing
+
+We welcome contributions to improve The Ultimate Bat File!
+
+### Development Guidelines
+1. **Modular Design** - Add new features as separate modules
+2. **Error Handling** - Include comprehensive error checking
+3. **Logging** - Log all operations with appropriate detail level
+4. **Documentation** - Document all functions and significant code blocks
+5. **Testing** - Test on multiple Windows versions when possible
+
+### Contribution Process
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes following the coding standards
+4. Test thoroughly on different Windows versions
+5. Commit with descriptive messages: `git commit -m 'Add feature description'`
+6. Push to your fork: `git push origin feature-name`
+7. Create a Pull Request with detailed description
+
+## 📊 Performance & Compatibility
+
+### System Requirements
+- **Minimum**: Windows 8.1, 1GB RAM, 100MB disk space
+- **Recommended**: Windows 10/11, 4GB RAM, 500MB disk space
+- **Optimal**: Windows 11, 8GB+ RAM, SSD storage
+
+### Performance Optimizations
+- Modular loading reduces memory footprint
+- Efficient PowerShell cmdlets replace legacy tools
+- Parallel operations where safe and beneficial
+- Smart caching of frequently accessed information
+
+### Compatibility Matrix
+| Feature | Win 8.1 | Win 10 | Win 11 |
+|---------|---------|--------|--------|
+| System Info | ✅ | ✅ | ✅ |
+| Maintenance | ✅ | ✅ | ✅ |
+| Security Tools | ⚠️ | ✅ | ✅ |
+| Modern Features | ❌ | ✅ | ✅ |
+| WiFi Manager | ✅ | ✅ | ✅ |
+
+## 📈 Roadmap
+
+### Version 2.1 (Next Release)
+- [ ] GUI interface option
+- [ ] Remote system management
+- [ ] Enhanced automation scripting
+- [ ] Cloud backup integration
+- [ ] Multi-language support
+
+### Future Versions
+- [ ] Web-based management interface
+- [ ] Integration with cloud services
+- [ ] Mobile companion app
+- [ ] Enterprise deployment tools
+- [ ] Machine learning-based optimization
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+```
 MIT License
 
-Copyright (c) 2024 John Gallie
+Copyright (c) 2024 John Gallie - JTG Systems
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-the Software, and to permit persons to whom the Software is furnished to do so,
-subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-Licensed for public use, not for resale.
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+```
 
-## Installation ⚙️
+## 💝 Sponsorship & Support
 
-1. Download the `The-Ultimate-Bat-File-By-JTGSYSTEMS.bat` file.
-2. Double-click the `.bat` file to run the tool.
+### Sponsor Benefits
+- **Recognition** in the main menu with your website link
+- **Priority Support** for feature requests and issues
+- **Custom Development** options for enterprise needs
+- **Early Access** to new features and releases
 
-## Usage 🕹️
-## Tools and Features 🧰
+### Contact Information
+- **Developer**: John Gallie
+- **Company**: JTG Systems
+- **Website**: [https://www.jtgsystems.com](https://www.jtgsystems.com)
+- **Phone**: 905-892-4555
+- **Email**: Contact through GitHub Issues for fastest response
 
-**The Ultimate Bat File - Windows System Tools & Utilities**
-
-This comprehensive .bat script, created by JTG SYSTEMS, provides a powerful menu of tools and utilities to manage, optimize, and troubleshoot your Windows system.  It's your all-in-one solution for system maintenance, diagnostics, networking, security, and performance enhancement.
-
-**Key Features & Tools:**
-
-**1. System Information Tools:**
-   - **System Information Overview:** Get a complete snapshot of your Windows system specifications.
-   - **System Uptime Check:** Monitor how long your system has been running.
-   - **Last Boot Time:** Quickly find out when your system was last started.
-   - **System Model & Manufacturer:** Identify your computer's model and manufacturer.
-   - **Operating System Details:** Check OS Version and Build Number for detailed Windows information.
-   - **System Language & Locale:** Verify your system's language settings.
-   - **System Serial Number:** Retrieve your system's serial number for identification.
-   - **BIOS Information:** Access BIOS Version and Manufacturer details.
-   - **CPU Specifications:** Check CPU Name, Speed, Cores, and Threads for processor information.
-   - **Memory (RAM) Details:** Monitor Total and Available Physical Memory.
-   - **Disk Drive Information:** List Disk Drives, Partitions, and Logical Disks with details like size and type.
-   - **Network Adapter Information:** Get details on Network Adapters, IP Addresses, MAC Addresses, Default Gateway, and DNS Servers.
-   - **DHCP & Winsock Configuration:** Check DHCP Server and Winsock Configuration for network settings.
-   - **Proxy Settings:** Review system Proxy Settings.
-   - **Environment Variables:** Examine system Environment Variables.
-   - **System Date and Time:** Verify current System Date and Time.
-
-**2. System Maintenance Tools:**
-   - **Disk Cleanup Utility:** Run Disk Cleanup to free up disk space.
-   - **Disk Defragmenter:** Optimize drive performance with Disk Defragmenter.
-   - **Registry Backup & Restore:** Backup and Restore your Windows Registry for system stability.
-   - **Temporary File Management:** Create Temporary Folders and Delete Temporary Files to manage system clutter.
-   - **Disk Space Analysis:** Check Disk Space to monitor storage usage.
-   - **Disk Error Checking:** Check Disk Errors and Run CHKDSK for disk health.
-   - **Pending Restarts Check:** Identify if your system has Pending Restarts.
-   - **System Restore Point Management:** Check, Create, and Restore System Restore Points for system recovery.
-   - **System Image Backup & Restore:** Manage System Image Backups for full system recovery.
-   - **File History Management:** Check, Enable, and Disable File History for data backup.
-   - **Windows Backup Management:** Check, Create, and Restore Windows Backups.
-   - **Page File & Boot Configuration Data Check:** Examine Page File Configuration and Boot Configuration Data.
-   - **Boot Log & Memory Dump Analysis:** Check for Boot Logs, Memory Dump Files, and Minidump Files for troubleshooting.
-   - **Driver Verifier Management:** Check Driver Verifier Status and Open Driver Verifier Manager for driver issue diagnosis.
-   - **System Reset:** Run System Reset to restore your PC to a clean state.
-
-**3. Diagnostic Tools:**
-   - **Performance Monitoring:** Check CPU Usage, Memory Usage, and overall System Performance.
-   - **Process & Service Management:** List Running Processes and Check Services Status.
-   - **Event Log Examination:** Check Event Logs for system errors and warnings.
-   - **Power & Battery Diagnostics:** Check Power Settings and Battery Health for power-related issues.
-   - **Device Status Checks:** Check USB Devices, Bluetooth Status, and Audio Devices for hardware connectivity.
-   - **Display & Resolution Settings:** Check Display Settings and Change Screen Resolution.
-   - **Disk & Network Performance Tests:** Check Disk Performance and Network Performance for speed and efficiency.
-   - **System Temperature & Fan Speed Monitoring:** Check System Temperature and Fan Speed to prevent overheating.
-   - **Memory Diagnostic Tool:** Run Memory Diagnostic to identify RAM issues.
-   - **Disk Usage Analysis:** Check Disk Usage by Folder to find space-consuming directories.
-   - **System Driver Verification:** Check System Drivers for driver-related problems.
-   - **Hardware Issue Detection:** Check for Hardware Issues and perform Hardware Compatibility Checks.
-   - **Windows Troubleshooters:** Run Windows Performance, Network, Audio, Printer, Update, Search, Store, Activation, and Backup Troubleshooters for automated problem solving.
-   - **Advanced Diagnostic Tools:** Launch Windows Memory Diagnostic, Open Device Manager, Export Critical Event Logs, Network Route Trace, Run DirectX Diagnostic Tool (dxdiag), and System Assessment Tool (WinSAT) for in-depth analysis.
-
-**4. Networking Tools:**
-   - **Network Connectivity Testing:** Ping Websites and utilize Network Connection Test Suite.
-   - **Network Configuration Analysis:** Check Network Configuration, Show IP Configuration, Check IP & DNS Configuration.
-   - **DNS Management:** Flush DNS Cache and Check DNS Servers.
-   - **Proxy & VPN Status:** Check Proxy Settings and VPN Status.
-   - **Remote Desktop Management:** Check, Enable, and Disable Remote Desktop.
-   - **Firewall Management:** Check Windows Firewall Status, Enable/Disable Firewall, Check Firewall Rules, Add/Remove Firewall Rules.
-   - **Network Share Management:** Check, Add, and Remove Network Shares.
-   - **Winsock & Proxy Configuration Review:** Check Winsock Configuration and Proxy Settings.
-   - **Gateway & DHCP Information:** Check Default Gateway and DHCP Server.
-   - **IP & MAC Address Details:** Check IP Addresses and MAC Addresses.
-   - **TCP Connection & Interface Statistics:** View Active TCP Connections and Network Interface Statistics.
-   - **Network Reset:** Reset Network Settings to default.
-
-**5. Security Tools:**
-   - **Antivirus & Malware Scans:** Run Antivirus Scan and Check for Malware using Windows Defender.
-   - **Windows Defender Management:** Check Windows Defender Status, Enable/Disable Defender, Check Defender Scans & Updates, Run Quick & Full Scans, Update Defender.
-   - **Firewall Management:** Check Windows Firewall Status, Enable/Disable Firewall, Check Firewall Rules, Add/Remove Firewall Rules.
-   - **User Account Control (UAC) Settings:** Check User Account Control Settings for security level adjustments.
-   - **Local Security Policy & User Rights:** Check Local Security Policy and User Rights Assignment for security configurations.
-   - **Audit & Security Policy Review:** Check Audit Policy and Security Options for system security settings.
-   - **Software & AppLocker Policies:** Check Software Restriction Policies and AppLocker Policies for application control.
-   - **TPM & Secure Boot Status:** Check TPM Status and Secure Boot Status for hardware security.
-   - **BitLocker Drive Encryption:** Check and Enable BitLocker Status for drive encryption.
-   - **Credential Manager:** Check Credential Manager, Add/Remove Credentials for saved logins.
-
-**6. Troubleshooting Tools:**
-   - **Automated Troubleshooters:** Run Power, Startup Repair, System File Checker, Windows Update, Search, Store, Activation, Backup, Performance, Network, Audio, and Printer Troubleshooters.
-   - **System Recovery Options:** Run Windows File Recovery, System Restore, and System Reset for various recovery scenarios.
-   - **Windows Recovery Environment Access:** Access Windows Recovery Environment for advanced troubleshooting.
-   - **Error & Feedback Reporting:** Check, Enable, and Disable Windows Error Reporting and Feedback.
-   - **Windows Insider Program Management:** Check, Join, and Leave Windows Insider Program for managing preview builds.
-   - **Windows Update Management:** Check Windows Update Status, Install/Uninstall Updates, Check for Pending & Installed Updates.
-
-**7. Performance Tools:**
-   - **Performance Monitoring:** Check CPU Usage, Memory Usage, System Performance, Disk Performance, and Network Performance.
-   - **Resource Monitoring:** Open Windows Performance Monitor, Resource Monitor, and Reliability Monitor for detailed system analysis.
-   - **System Health Checks:** Check System Temperature, Fan Speed, System Stability, and Hardware Resource Usage.
-   - **Power Management Analysis:** Check Power Configuration, Sleep Study Report, Battery Report, and System Power Efficiency Diagnostics Report.
-   - **Task Scheduling:** Check for Windows Task Scheduler, Create, Delete, and Run Scheduled Tasks for automation.
-   - **Display Calibration:** Monitor Color Calibration for display accuracy.
-
-**8. Software Tools:**
-   - **Software Inventory:** Check for Installed Software, Windows Features, and Optional Features.
-   - **Software Management:** Uninstall and Install Software, Enable/Disable Windows Features, Install Optional Features.
-   - **WSL & Hyper-V Management:** Check Windows Subsystem for Linux (WSL) Status, Enable/Disable WSL, Check Hyper-V Status, Enable/Disable Hyper-V.
-   - **Virtualization Support Check:** Check for Virtualization Support.
-   - **Development Environment Checks:** Check for .NET Framework, Java, Python, Node.js, and PowerShell Versions.
-   - **Multimedia Component Checks:** Check for DirectX and OpenGL Versions.
-
-**9. Windows Access Tools:**
-   - **Quick Access to Windows Utilities:** Open Windows Mobility Center, Performance Monitor, Resource Monitor, Event Viewer, Reliability Monitor, Device Manager, Driver Verifier Manager, User Account Control Settings, and Windows Recovery Environment.
-   - **Boot Options:** Boot into Safe Mode and perform Windows Safe Mode Check.
-   - **Command Line & Scripting:** Open Windows Command Prompt, PowerShell, and Windows Terminal, and perform checks for each.
-   - **System Management Utilities:** Open Windows Task Manager, Settings, Control Panel, File Explorer, Run Dialog, Search, and perform checks for each.
-   - **Built-in Applications:** Open and perform checks for Snipping Tool, Calculator, Notepad, Paint, WordPad, Media Player, Photos, Music, Movies & TV, and Store.
-
-**10. WiFi Network Manager:**
-    - **WiFi Network Discovery:** Show Available Networks.
-    - **WiFi Connection Management:** Connect to Networks, Forget Networks, Show Saved Networks.
-    - **WiFi Status & Reporting:** Show Network Status, Generate WiFi Reports.
-    - **WiFi Password Retrieval:** Show WiFi Passwords for saved networks.
-    - **WiFi Adapter Control:** Enable and Disable WiFi.
-
-**11. App Management Tools:**
-    - **Installed App Listing:** List Installed Apps.
-    - **App Management Actions:** Remove, Repair, Reset, Start, and Stop Apps.
-    - **App Status & Dependency Check:** Check App Status and App Dependencies.
-
-**12. Privacy Settings:**
-    - **Privacy Settings Access:** Check Privacy Settings and Manage App Permissions.
-    - **Privacy Area Management:** Location Settings, Camera Settings, Microphone Settings, Notifications Settings, Background Apps, and Diagnostic Data settings access.
-
-**13. Modern Windows Features:**
-    - **Windows Hello Status:** Check Windows Hello Status.
-    - **Modern Feature Management:** Manage Virtual Desktops and Snap Layouts.
-    - **Widget & Android App Support:** Check Widget Status and Android Apps Support.
-    - **Gaming Feature Status:** DirectStorage Status and Auto HDR Status checks.
-
-**14. Disk Health Monitor:**
-    - **Disk Status Monitoring:** Check SMART Status, View Disk Health Reports, Check Bad Sectors.
-    - **Disk Performance & Health Metrics:** Disk Performance Stats, Disk Temperature, SSD Life Status, and Disk Error History.
-
-**15. Security Center:**
-    - **Security Overview:** Security Health Check.
-    - **Advanced Security Feature Status:** Ransomware Protection Status, Core Isolation Status, App & Browser Control, Exploit Protection Settings, Network Protection Status, and Controlled Folder Access checks.
-
-**16. Advanced Diagnostics Tools:**
-    - **System Reporting:** Reliability History Report, Driver Status Report, Boot Configuration Analysis, Service Dependencies Map, System File Version Check, DNS Cache Status, VSS Writer Status, Memory Dump Analysis, Active Directory Health, Print Spooler Status, Windows Installer State, User Profile Analysis, and System Access Check reports.
-    - **Performance & Resource Analysis:** Component Store Analysis, Group Policy Results, PCI Device Check, Memory Leak Detection, Hardware Resource Conflicts, Registry Size Analysis, Active Port Connections, Pending File Operations, Disk Queue Analysis, Process Handle Count, Disk Write Cache Config, and System Pool Usage analysis.
-
-This tool is designed to be your go-to .bat file for comprehensive Windows management, troubleshooting, and optimization.
-
-
-
-The tool presents a menu with various options. Simply enter the number
-corresponding to the desired tool and press Enter.
-
-## Contributing 🤝
-
-Contributions are welcome! Please feel free to submit pull requests or open
-issues to suggest improvements or report bugs.
-
-## Contact 📧
-
-For any questions or inquiries, please contact John Gallie at 905 892 4555
+### Support the Project
+If you find The Ultimate Bat File helpful:
+- ⭐ Star the repository on GitHub
+- 🐛 Report bugs and suggest improvements
+- 📢 Share with others who might benefit
+- 💖 Consider sponsoring development
 
 ---
 
-© 2024 JTG SYSTEMS. All rights reserved.
+**© 2024 JTG Systems. All rights reserved.**
+
+*Professional Windows system management made simple and powerful.*

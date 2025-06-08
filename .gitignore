@@ -1,0 +1,86 @@
+# The Ultimate Bat File - Git Ignore Rules
+
+# Log files
+*.log
+logs/
+tools_log.txt
+
+# Windows Event Log files
+*.evtx
+*.evt
+
+# Critical event exports
+CriticalAppEvents.txt
+CriticalSystemEvents.txt
+
+# Backup files
+backups/
+*.reg.bak
+*.bak
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+*.temp
+
+# Windows system files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Config files that may contain sensitive data
+config/user.conf
+config/credentials.conf
+
+# Cache directories
+cache/
+.cache/
+
+# PowerShell transcript files
+PowerShell_transcript.*
+
+# Test output
+test-results/
+test-output/
+
+# IDE and editor files
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Windows shortcuts
+*.lnk
+
+# Compiled binaries (if any)
+*.exe
+*.dll
+*.msi
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Documentation build output
+docs/_build/
+docs/build/
+
+# Sensitive information
+passwords.txt
+credentials.txt
+api-keys.txt
+
+# Large data files
+*.iso
+*.img
+*.vhd
+*.vhdx
+
+# Performance logs
+perfmon/
+performance-logs/
