@@ -130,31 +130,15 @@ echo 8. Check System Language
 echo 9. Check System Serial Number
 echo 10. Check BIOS Version
 echo 11. Check BIOS Manufacturer
-echo 12. Check CPU Name
-echo 13. Check CPU Speed
-echo 14. Check CPU Cores
-echo 15. Check CPU Threads
-echo 16. Check Total Physical Memory
-echo 17. Check Available Physical Memory
-echo 18. Check Disk Drives
-echo 19. Check Disk Partitions
-echo 20. Check Logical Disks
-echo 21. Check Network Adapters
-echo 22. Check IP Addresses
-echo 23. Check MAC Addresses
-echo 24. Check Default Gateway
-echo 25. Check DNS Servers
-echo 26. Check DHCP Server
-echo 27. Check Winsock Configuration
-echo 28. Check Proxy Settings
-echo 29. Check Environment Variables
-echo 30. Check System Date and Time
-echo 31. Detailed RAM Information
-echo 32. GPU Information
-echo 33. Windows Activation Status
-echo 34. Back to Main Menu
+echo 12. CPU Information (Name, Speed, Cores, Threads)
+echo 13. Memory Information (Total, Available, Details)
+echo 14. Storage Information (Drives, Partitions, Disks)
+echo 15. Network Information (Adapters, IP, MAC, DNS)
+echo 16. System Details (BIOS, Serial, Environment)
+echo 17. Complete System Profile (All System Info Combined)
+echo 18. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-34): "
+set /p "choice=Enter your choice (1-18): "
 
 if "%choice%"=="1" goto Tool018
 if "%choice%"=="2" goto Tool144
@@ -167,29 +151,13 @@ if "%choice%"=="8" goto Tool150
 if "%choice%"=="9" goto Tool151
 if "%choice%"=="10" goto Tool152
 if "%choice%"=="11" goto Tool153
-if "%choice%"=="12" goto Tool154
-if "%choice%"=="13" goto Tool155
-if "%choice%"=="14" goto Tool156
-if "%choice%"=="15" goto Tool157
-if "%choice%"=="16" goto Tool158
-if "%choice%"=="17" goto Tool159
-if "%choice%"=="18" goto Tool160
-if "%choice%"=="19" goto Tool161
-if "%choice%"=="20" goto Tool162
-if "%choice%"=="21" goto Tool163
-if "%choice%"=="22" goto Tool164
-if "%choice%"=="23" goto Tool165
-if "%choice%"=="24" goto Tool166
-if "%choice%"=="25" goto Tool167
-if "%choice%"=="26" goto Tool168
-if "%choice%"=="27" goto Tool169
-if "%choice%"=="28" goto Tool170
-if "%choice%"=="29" goto Tool185
-if "%choice%"=="30" goto Tool186
-if "%choice%"=="31" goto Tool260
-if "%choice%"=="32" goto Tool270
-if "%choice%"=="33" goto Tool280
-if "%choice%"=="34" goto MainMenu
+if "%choice%"=="12" goto Tool_CPUInfo
+if "%choice%"=="13" goto Tool_MemoryInfo
+if "%choice%"=="14" goto Tool_StorageInfo
+if "%choice%"=="15" goto Tool_NetworkInfo
+if "%choice%"=="16" goto Tool_SystemDetails
+if "%choice%"=="17" goto Tool_CompleteSystemProfile
+if "%choice%"=="18" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SystemInfoMenu
@@ -587,75 +555,23 @@ cls
 echo.
 echo Networking Tools
 echo ------------------
-echo 1. Ping a Website
-echo 2. Check Network Configuration
-echo 3. Flush DNS Cache
-echo 4. Show IP Configuration
-echo 5. Check Network Speed
-echo 6. Check IP Configuration
-echo 7. Check DNS Configuration
-echo 8. Check Proxy Settings
-echo 9. Check VPN Status
-echo 10. Check Remote Desktop Status
-echo 11. Enable Remote Desktop
-echo 12. Disable Remote Desktop
-echo 13. Reset Network Settings
-echo 14. Check Firewall Status
-echo 15. Enable Windows Firewall
-echo 16. Disable Windows Firewall
-echo 17. Check for Windows Firewall Rules
-echo 18. Add Firewall Rule
-echo 19. Remove Firewall Rule
-echo 20. Check for Network Shares
-echo 21. Add Network Share
-echo 22. Remove Network Share
-echo 23. Check Winsock Configuration
-echo 24. Check Proxy Settings
-echo 25. Check Default Gateway
-echo 26. Check DNS Servers
-echo 27. Check DHCP Server
-echo 28. Check IP Addresses
-echo 29. Check MAC Addresses
-echo 30. Network Connection Test Suite
-echo 31. View Active TCP Connections
-echo 32. Network Interface Statistics
-echo 33. Back to Main Menu
+echo 1. Network Connectivity Tools
+echo 2. Network Configuration Tools
+echo 3. Firewall Management Tools
+echo 4. Network Sharing Tools
+echo 5. Network Diagnostics Tools
+echo 6. Network Health Suite (Complete Network Analysis)
+echo 7. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-33): "
+set /p "choice=Enter your choice (1-7): "
 
-if "%choice%"=="1" goto Tool006
-if "%choice%"=="2" goto Tool007
-if "%choice%"=="3" goto Tool005
-if "%choice%"=="4" goto Tool007
-if "%choice%"=="5" goto Tool050
-if "%choice%"=="6" goto Tool051
-if "%choice%"=="7" goto Tool052
-if "%choice%"=="8" goto Tool053
-if "%choice%"=="9" goto Tool054
-if "%choice%"=="10" goto Tool055
-if "%choice%"=="11" goto Tool056
-if "%choice%"=="12" goto Tool057
-if "%choice%"=="13" goto Tool005
-if "%choice%"=="14" goto Tool037
-if "%choice%"=="15" goto Tool038
-if "%choice%"=="16" goto Tool039
-if "%choice%"=="17" goto Tool084
-if "%choice%"=="18" goto Tool085
-if "%choice%"=="19" goto Tool086
-if "%choice%"=="20" goto Tool087
-if "%choice%"=="21" goto Tool088
-if "%choice%"=="22" goto Tool089
-if "%choice%"=="23" goto Tool169
-if "%choice%"=="24" goto Tool170
-if "%choice%"=="25" goto Tool166
-if "%choice%"=="26" goto Tool167
-if "%choice%"=="27" goto Tool168
-if "%choice%"=="28" goto Tool164
-if "%choice%"=="29" goto Tool165
-if "%choice%"=="30" goto Tool_NetTest
-if "%choice%"=="31" goto Tool_TCPView
-if "%choice%"=="32" goto Tool_NetStats
-if "%choice%"=="33" goto MainMenu
+if "%choice%"=="1" goto Tool_NetConnectivity
+if "%choice%"=="2" goto Tool_NetConfig
+if "%choice%"=="3" goto Tool_FirewallMgmt
+if "%choice%"=="4" goto Tool_NetSharing
+if "%choice%"=="5" goto Tool_NetDiagnostics
+if "%choice%"=="6" goto Tool_NetworkHealthSuite
+if "%choice%"=="7" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto NetworkingMenu
@@ -721,9 +637,10 @@ echo 28. Check for Credential Manager
 echo 29. Add Credential
 echo 30. Remove Credential
 echo 31. Comprehensive Security Scan
-echo 32. Back to Main Menu
+echo 32. Security Vulnerability Scanner
+echo 33. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-32): "
+set /p "choice=Enter your choice (1-33): "
 
 if "%choice%"=="1" goto Tool001
 if "%choice%"=="2" goto Tool024
@@ -756,7 +673,8 @@ if "%choice%"=="28" goto Tool081
 if "%choice%"=="29" goto Tool082
 if "%choice%"=="30" goto Tool083
 if "%choice%"=="31" goto Tool_SecurityScan
-if "%choice%"=="32" goto MainMenu
+if "%choice%"=="32" goto Tool_SecurityVulnerabilityScanner
+if "%choice%"=="33" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SecurityMenu
@@ -821,6 +739,99 @@ powershell -Command "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protoco
 type security_audit.txt
 pause
 goto SecurityMenu
+
+:Tool_SecurityVulnerabilityScanner
+set "return=SecurityMenu"
+if not "%1"=="" set "return=%1"
+echo Running Tool: Security Vulnerability Scanner...
+echo =============================================== > security_vulnerability_scan.txt
+echo SECURITY VULNERABILITY SCAN REPORT - %date% %time% >> security_vulnerability_scan.txt
+echo =============================================== >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+REM Windows Update Status
+echo [WINDOWS UPDATE STATUS] >> security_vulnerability_scan.txt
+echo ======================= >> security_vulnerability_scan.txt
+powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 5 HotFixID,InstalledOn,Description | Format-Table -AutoSize" >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Check for outdated software
+echo [POTENTIALLY OUTDATED SOFTWARE] >> security_vulnerability_scan.txt
+echo ================================ >> security_vulnerability_scan.txt
+powershell -Command "Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Where-Object {$_.DisplayName -and $_.InstallDate} | Select-Object DisplayName,InstallDate | Sort-Object InstallDate | Format-Table -AutoSize" >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Check for weak passwords (user accounts)
+echo [USER ACCOUNT SECURITY] >> security_vulnerability_scan.txt
+echo ======================= >> security_vulnerability_scan.txt
+net user >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+REM Check for open ports
+echo [OPEN NETWORK PORTS] >> security_vulnerability_scan.txt
+echo ==================== >> security_vulnerability_scan.txt
+netstat -ano | findstr "LISTENING" >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+REM Check for suspicious services
+echo [SUSPICIOUS SERVICES] >> security_vulnerability_scan.txt
+echo ==================== >> security_vulnerability_scan.txt
+powershell -Command "Get-Service | Where-Object {$_.StartType -eq 'Automatic' -and $_.Status -eq 'Stopped'} | Select-Object Name,DisplayName,StartType,Status | Format-Table -AutoSize" >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Check for weak encryption protocols
+echo [ENCRYPTION PROTOCOLS] >> security_vulnerability_scan.txt
+echo ====================== >> security_vulnerability_scan.txt
+powershell -Command "Get-TlsCipherSuite | Select-Object Name,Exchange,Hash,Cipher | Format-Table -AutoSize" >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Check for admin shares
+echo [ADMIN SHARES STATUS] >> security_vulnerability_scan.txt
+echo ==================== >> security_vulnerability_scan.txt
+net share | findstr /C:"$" >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+REM Check for guest account status
+echo [GUEST ACCOUNT STATUS] >> security_vulnerability_scan.txt
+echo ===================== >> security_vulnerability_scan.txt
+net user guest >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+REM Check for remote registry access
+echo [REMOTE REGISTRY ACCESS] >> security_vulnerability_scan.txt
+echo ======================== >> security_vulnerability_scan.txt
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\SecurePipeServers\winreg" >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Check for UAC settings
+echo [USER ACCOUNT CONTROL SETTINGS] >> security_vulnerability_scan.txt
+echo ================================ >> security_vulnerability_scan.txt
+reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableLUA >> security_vulnerability_scan.txt 2>nul
+echo. >> security_vulnerability_scan.txt
+
+REM Generate vulnerability summary
+echo [VULNERABILITY SUMMARY] >> security_vulnerability_scan.txt
+echo ====================== >> security_vulnerability_scan.txt
+echo This scan has identified potential security vulnerabilities. >> security_vulnerability_scan.txt
+echo Please review the findings above and take appropriate action: >> security_vulnerability_scan.txt
+echo - Ensure Windows is fully updated >> security_vulnerability_scan.txt
+echo - Review user account security >> security_vulnerability_scan.txt
+echo - Check for unnecessary open ports >> security_vulnerability_scan.txt
+echo - Monitor suspicious services >> security_vulnerability_scan.txt
+echo - Review encryption protocols >> security_vulnerability_scan.txt
+echo - Secure admin shares if not needed >> security_vulnerability_scan.txt
+echo - Disable guest account if not required >> security_vulnerability_scan.txt
+echo - Ensure UAC is enabled >> security_vulnerability_scan.txt
+echo. >> security_vulnerability_scan.txt
+
+echo =============================================== >> security_vulnerability_scan.txt
+echo END OF SECURITY VULNERABILITY SCAN >> security_vulnerability_scan.txt
+echo =============================================== >> security_vulnerability_scan.txt
+
+echo Security vulnerability scan complete. Opening report...
+type security_vulnerability_scan.txt
+pause
+goto %return%
 
 :TroubleshootingMenu
 cls
@@ -926,9 +937,10 @@ echo 21. Hardware Resource Usage
 echo 22. Monitor Color Calibration
 echo 23. System Stability Check
 echo 24. Comprehensive Performance Analysis
-echo 25. Back to Main Menu
+echo 25. Performance Benchmark Suite (Complete Testing)
+echo 26. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-25): "
+set /p "choice=Enter your choice (1-26): "
 
 if "%choice%"=="1" goto Tool002
 if "%choice%"=="2" goto Tool003
@@ -954,10 +966,103 @@ if "%choice%"=="21" goto Tool_HWResources
 if "%choice%"=="22" goto Tool_ColorCal
 if "%choice%"=="23" goto Tool_StabilityCheck
 if "%choice%"=="24" goto Tool_PerformanceAnalysis
-if "%choice%"=="25" goto MainMenu
+if "%choice%"=="25" goto Tool_PerformanceBenchmarkSuite
+if "%choice%"=="26" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto PerformanceMenu
+
+:Tool_PerformanceBenchmarkSuite
+set "return=PerformanceMenu"
+if not "%1"=="" set "return=%1"
+echo Running Tool: Performance Benchmark Suite (Complete Testing)...
+echo ================================================= > performance_benchmark_suite.txt
+echo PERFORMANCE BENCHMARK SUITE REPORT - %date% %time% >> performance_benchmark_suite.txt
+echo ================================================= >> performance_benchmark_suite.txt
+echo. >> performance_benchmark_suite.txt
+
+REM CPU Benchmark
+echo [CPU PERFORMANCE BENCHMARK] >> performance_benchmark_suite.txt
+echo =========================== >> performance_benchmark_suite.txt
+powershell -Command "@{
+    'CPU Load Test' = Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 10 | Select-Object -ExpandProperty CounterSamples | Measure-Object CookedValue -Average
+    'CPU Details' = Get-WmiObject Win32_Processor | Select-Object Name,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM Memory Benchmark
+echo [MEMORY PERFORMANCE BENCHMARK] >> performance_benchmark_suite.txt
+echo ============================== >> performance_benchmark_suite.txt
+powershell -Command "@{
+    'Memory Usage' = Get-Counter '\Memory\Available MBytes','\Memory\Committed Bytes','\Memory\Pool Paged Bytes' -SampleInterval 1 -MaxSamples 5
+    'Memory Details' = Get-WmiObject Win32_OperatingSystem | Select-Object @{Name='Total Memory(GB)';Expression={[math]::Round($_.TotalVisibleMemorySize/1MB, 2)}},@{Name='Free Memory(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB, 2)}}
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM Disk Performance Benchmark
+echo [DISK PERFORMANCE BENCHMARK] >> performance_benchmark_suite.txt
+echo ============================ >> performance_benchmark_suite.txt
+powershell -Command "@{
+    'Disk I/O' = Get-Counter '\PhysicalDisk(_Total)\Disk Transfers/sec','\PhysicalDisk(_Total)\% Disk Time','\PhysicalDisk(_Total)\Avg. Disk sec/Transfer' -SampleInterval 1 -MaxSamples 5
+    'Disk Details' = Get-PhysicalDisk | Select-Object DeviceId,FriendlyName,MediaType,Size,HealthStatus
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM Network Performance Benchmark
+echo [NETWORK PERFORMANCE BENCHMARK] >> performance_benchmark_suite.txt
+echo ================================ >> performance_benchmark_suite.txt
+powershell -Command "@{
+    'Network I/O' = Get-Counter '\Network Interface(*)\Bytes Total/sec' -SampleInterval 1 -MaxSamples 5 -ErrorAction SilentlyContinue
+    'Network Details' = Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object Name,InterfaceDescription,LinkSpeed
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM System Stability Test
+echo [SYSTEM STABILITY TEST] >> performance_benchmark_suite.txt
+echo ====================== >> performance_benchmark_suite.txt
+powershell -Command "@{
+    'System Uptime' = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    'Critical Events (Last 24h)' = (Get-WinEvent -FilterHashtable @{LogName='System'; Level=1,2,3; StartTime=(Get-Date).AddDays(-1)} -ErrorAction SilentlyContinue | Measure-Object).Count
+    'Running Processes' = (Get-Process | Measure-Object).Count
+    'Services Running' = (Get-Service | Where-Object {$_.Status -eq 'Running'} | Measure-Object).Count
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM Performance Score Calculation
+echo [PERFORMANCE SCORE CALCULATION] >> performance_benchmark_suite.txt
+echo ================================ >> performance_benchmark_suite.txt
+powershell -Command "@{
+    $cpuScore = (Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 5 | Select-Object -ExpandProperty CounterSamples | Measure-Object CookedValue -Average).Average
+    $memScore = (Get-Counter '\Memory\Available MBytes' -SampleInterval 1 -MaxSamples 1 | Select-Object -ExpandProperty CounterSamples).CookedValue
+    $diskScore = (Get-Counter '\PhysicalDisk(_Total)\% Disk Time' -SampleInterval 1 -MaxSamples 1 | Select-Object -ExpandProperty CounterSamples).CookedValue
+
+    'Overall Performance Score' = @{
+        'CPU Performance' = if ($cpuScore -lt 30) {'Excellent'} elseif ($cpuScore -lt 60) {'Good'} elseif ($cpuScore -lt 80) {'Fair'} else {'Poor'}
+        'Memory Performance' = if ($memScore -gt 1000) {'Excellent'} elseif ($memScore -gt 500) {'Good'} elseif ($memScore -gt 200) {'Fair'} else {'Poor'}
+        'Disk Performance' = if ($diskScore -lt 20) {'Excellent'} elseif ($diskScore -lt 40) {'Good'} elseif ($diskScore -lt 70) {'Fair'} else {'Poor'}
+    }
+} | Format-List" >> performance_benchmark_suite.txt 2>nul
+echo. >> performance_benchmark_suite.txt
+
+REM Recommendations
+echo [PERFORMANCE RECOMMENDATIONS] >> performance_benchmark_suite.txt
+echo ============================= >> performance_benchmark_suite.txt
+echo Based on the benchmark results above, here are some recommendations: >> performance_benchmark_suite.txt
+echo - Monitor CPU usage and close unnecessary applications if load is consistently high >> performance_benchmark_suite.txt
+echo - Consider memory upgrade if available memory is consistently low >> performance_benchmark_suite.txt
+echo - Check for disk fragmentation or consider SSD upgrade if disk performance is poor >> performance_benchmark_suite.txt
+echo - Review network configuration if network performance is suboptimal >> performance_benchmark_suite.txt
+echo - Check for malware or unnecessary startup programs if system stability is poor >> performance_benchmark_suite.txt
+echo. >> performance_benchmark_suite.txt
+
+echo ================================================= >> performance_benchmark_suite.txt
+echo END OF PERFORMANCE BENCHMARK SUITE REPORT >> performance_benchmark_suite.txt
+echo ================================================= >> performance_benchmark_suite.txt
+
+echo Performance benchmark suite analysis complete. Opening report...
+type performance_benchmark_suite.txt
+pause
+goto %return%
 
 :Tool_HWResources
 echo Checking Hardware Resource Usage...
@@ -1103,9 +1208,10 @@ echo 17. Check for Node.js Version
 echo 18. Check for PowerShell Version
 echo 19. Check for DirectX Version
 echo 20. Check for OpenGL Version
-echo 21. Back to Main Menu
+echo 21. Browser Data Manager (All Browsers)
+echo 22. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-21): "
+set /p "choice=Enter your choice (1-22): "
 
 if "%choice%"=="1" goto Tool031
 if "%choice%"=="2" goto Tool032
@@ -1127,7 +1233,8 @@ if "%choice%"=="17" goto Tool195
 if "%choice%"=="18" goto Tool196
 if "%choice%"=="19" goto Tool190
 if "%choice%"=="20" goto Tool191
-if "%choice%"=="21" goto MainMenu
+if "%choice%"=="21" goto Tool_BrowserDataManager
+if "%choice%"=="22" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SoftwareMenu
@@ -1257,9 +1364,11 @@ echo 6. Generate WiFi Report
 echo 7. Show WiFi Password
 echo 8. Enable WiFi
 echo 9. Disable WiFi
-echo 10. Back to Main Menu
+echo 10. Detect All Available Networks (Enhanced)
+echo 11. Show All Saved WiFi Passwords
+echo 12. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-10): "
+set /p "choice=Enter your choice (1-12): "
 
 if "%choice%"=="1" goto Tool201
 if "%choice%"=="2" goto Tool202
@@ -1270,7 +1379,9 @@ if "%choice%"=="6" goto Tool206
 if "%choice%"=="7" goto Tool207
 if "%choice%"=="8" goto Tool208
 if "%choice%"=="9" goto Tool209
-if "%choice%"=="10" goto MainMenu
+if "%choice%"=="10" goto Tool_WiFiDetectAll
+if "%choice%"=="11" goto Tool_WiFiShowAllKeys
+if "%choice%"=="12" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto WiFiMenu
@@ -3479,6 +3590,128 @@ start opengl32.dll
 pause
 goto MainMenu
 
+:Tool_BrowserDataManager
+set "return=SoftwareMenu"
+if not "%1"=="" set "return=%1"
+echo Running Tool: Browser Data Manager (All Browsers)...
+echo ============================================ > browser_data_manager.txt
+echo BROWSER DATA MANAGER REPORT - %date% %time% >> browser_data_manager.txt
+echo ============================================ >> browser_data_manager.txt
+echo. >> browser_data_manager.txt
+
+REM Check installed browsers
+echo [INSTALLED BROWSERS] >> browser_data_manager.txt
+echo ==================== >> browser_data_manager.txt
+powershell -Command "Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' | Where-Object {$_.DisplayName -like '*Chrome*' -or $_.DisplayName -like '*Firefox*' -or $_.DisplayName -like '*Edge*' -or $_.DisplayName -like '*Opera*' -or $_.DisplayName -like '*Safari*'} | Select-Object DisplayName,DisplayVersion,InstallDate | Format-Table -AutoSize" >> browser_data_manager.txt 2>nul
+echo. >> browser_data_manager.txt
+
+REM Chrome Data Management
+echo [CHROME BROWSER DATA] >> browser_data_manager.txt
+echo ===================== >> browser_data_manager.txt
+if exist "%LOCALAPPDATA%\Google\Chrome\User Data\Default" (
+    echo Chrome user data found at: %LOCALAPPDATA%\Google\Chrome\User Data\Default >> browser_data_manager.txt
+    dir /b "%LOCALAPPDATA%\Google\Chrome\User Data\Default" >> browser_data_manager.txt 2>nul
+    echo. >> browser_data_manager.txt
+    echo Chrome Cache Size: >> browser_data_manager.txt
+    powershell -Command "if (Test-Path '%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache') { (Get-ChildItem '%LOCALAPPDATA%\Google\Chrome\User Data\Default\Cache' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB | ForEach-Object { [math]::Round($_, 2) } } else { 'Cache not found' }" >> browser_data_manager.txt 2>nul
+) else (
+    echo Chrome not installed or data not found >> browser_data_manager.txt
+)
+echo. >> browser_data_manager.txt
+
+REM Firefox Data Management
+echo [FIREFOX BROWSER DATA] >> browser_data_manager.txt
+echo ===================== >> browser_data_manager.txt
+if exist "%APPDATA%\Mozilla\Firefox\Profiles" (
+    echo Firefox profiles found at: %APPDATA%\Mozilla\Firefox\Profiles >> browser_data_manager.txt
+    dir /b "%APPDATA%\Mozilla\Firefox\Profiles" >> browser_data_manager.txt 2>nul
+    echo. >> browser_data_manager.txt
+    echo Firefox Cache Size: >> browser_data_manager.txt
+    powershell -Command "if (Test-Path '%APPDATA%\Mozilla\Firefox\Profiles\*.default*\cache2') { (Get-ChildItem '%APPDATA%\Mozilla\Firefox\Profiles\*.default*\cache2' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB | ForEach-Object { [math]::Round($_, 2) } } else { 'Cache not found' }" >> browser_data_manager.txt 2>nul
+) else (
+    echo Firefox not installed or data not found >> browser_data_manager.txt
+)
+echo. >> browser_data_manager.txt
+
+REM Edge Data Management
+echo [MICROSOFT EDGE BROWSER DATA] >> browser_data_manager.txt
+echo ============================= >> browser_data_manager.txt
+if exist "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default" (
+    echo Edge user data found at: %LOCALAPPDATA%\Microsoft\Edge\User Data\Default >> browser_data_manager.txt
+    dir /b "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default" >> browser_data_manager.txt 2>nul
+    echo. >> browser_data_manager.txt
+    echo Edge Cache Size: >> browser_data_manager.txt
+    powershell -Command "if (Test-Path '%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache') { (Get-ChildItem '%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Cache' -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB | ForEach-Object { [math]::Round($_, 2) } } else { 'Cache not found' }" >> browser_data_manager.txt 2>nul
+) else (
+    echo Edge not installed or data not found >> browser_data_manager.txt
+)
+echo. >> browser_data_manager.txt
+
+REM Browser History Summary
+echo [BROWSER HISTORY SUMMARY] >> browser_data_manager.txt
+echo ========================= >> browser_data_manager.txt
+powershell -Command "@{
+    'Chrome History' = if (Test-Path '%LOCALAPPDATA%\Google\Chrome\User Data\Default\History') { (Get-Item '%LOCALAPPDATA%\Google\Chrome\User Data\Default\History').LastWriteTime } else { 'Not found' }
+    'Firefox History' = if (Test-Path '%APPDATA%\Mozilla\Firefox\Profiles\*.default*\places.sqlite') { (Get-Item '%APPDATA%\Mozilla\Firefox\Profiles\*.default*\places.sqlite').LastWriteTime } else { 'Not found' }
+    'Edge History' = if (Test-Path '%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\History') { (Get-Item '%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\History').LastWriteTime } else { 'Not found' }
+} | Format-Table -AutoSize" >> browser_data_manager.txt 2>nul
+echo. >> browser_data_manager.txt
+
+REM Browser Extensions Summary
+echo [BROWSER EXTENSIONS SUMMARY] >> browser_data_manager.txt
+echo ============================ >> browser_data_manager.txt
+echo Chrome Extensions: >> browser_data_manager.txt
+if exist "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Extensions" (
+    dir /b "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Extensions" >> browser_data_manager.txt 2>nul
+) else (
+    echo No Chrome extensions found >> browser_data_manager.txt
+)
+echo. >> browser_data_manager.txt
+echo Firefox Extensions: >> browser_data_manager.txt
+if exist "%APPDATA%\Mozilla\Firefox\Profiles\*.default*\extensions" (
+    dir /b "%APPDATA%\Mozilla\Firefox\Profiles\*.default*\extensions" >> browser_data_manager.txt 2>nul
+) else (
+    echo No Firefox extensions found >> browser_data_manager.txt
+)
+echo. >> browser_data_manager.txt
+
+REM Total Browser Data Size
+echo [TOTAL BROWSER DATA SIZE] >> browser_data_manager.txt
+echo ========================= >> browser_data_manager.txt
+powershell -Command "@{
+    $chromeSize = if (Test-Path '%LOCALAPPDATA%\Google\Chrome') { (Get-ChildItem '%LOCALAPPDATA%\Google\Chrome' -Recurse | Measure-Object -Property Length -Sum).Sum / 1GB } else { 0 }
+    $firefoxSize = if (Test-Path '%APPDATA%\Mozilla\Firefox') { (Get-ChildItem '%APPDATA%\Mozilla\Firefox' -Recurse | Measure-Object -Property Length -Sum).Sum / 1GB } else { 0 }
+    $edgeSize = if (Test-Path '%LOCALAPPDATA%\Microsoft\Edge') { (Get-ChildItem '%LOCALAPPDATA%\Microsoft\Edge' -Recurse | Measure-Object -Property Length -Sum).Sum / 1GB } else { 0 }
+
+    'Chrome Data Size (GB)' = [math]::Round($chromeSize, 2)
+    'Firefox Data Size (GB)' = [math]::Round($firefoxSize, 2)
+    'Edge Data Size (GB)' = [math]::Round($edgeSize, 2)
+    'Total Browser Data (GB)' = [math]::Round(($chromeSize + $firefoxSize + $edgeSize), 2)
+} | Format-Table -AutoSize" >> browser_data_manager.txt 2>nul
+echo. >> browser_data_manager.txt
+
+REM Browser Cleanup Recommendations
+echo [BROWSER CLEANUP RECOMMENDATIONS] >> browser_data_manager.txt
+echo ================================= >> browser_data_manager.txt
+echo To clean browser data, you can: >> browser_data_manager.txt
+echo 1. Clear browser cache and temporary files >> browser_data_manager.txt
+echo 2. Delete browsing history and cookies >> browser_data_manager.txt
+echo 3. Remove unused extensions >> browser_data_manager.txt
+echo 4. Clear download history >> browser_data_manager.txt
+echo 5. Reset browser settings if needed >> browser_data_manager.txt
+echo. >> browser_data_manager.txt
+echo Note: Always backup important data before cleaning >> browser_data_manager.txt
+echo. >> browser_data_manager.txt
+
+echo ============================================ >> browser_data_manager.txt
+echo END OF BROWSER DATA MANAGER REPORT >> browser_data_manager.txt
+echo ============================================ >> browser_data_manager.txt
+
+echo Browser data analysis complete. Opening report...
+type browser_data_manager.txt
+pause
+goto %return%
+
 :Tool192
 echo Running Tool 192: Check .NET Framework Versions...
 reg query "HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP"
@@ -3539,7 +3772,259 @@ goto MainMenu
  pause
  goto %return%
 
-:Tool260
+:Tool_CPUInfo
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: CPU Information...
+ echo ---------------------------------------- > cpu_info.txt
+ echo CPU Information Report - %date% %time% >> cpu_info.txt
+ echo ---------------------------------------- >> cpu_info.txt
+
+ REM CPU Name
+ echo CPU Name: >> cpu_info.txt
+ wmic cpu get name >> cpu_info.txt
+
+ REM CPU Speed
+ echo. >> cpu_info.txt
+ echo CPU Speed: >> cpu_info.txt
+ wmic cpu get CurrentClockSpeed >> cpu_info.txt
+
+ REM CPU Cores
+ echo. >> cpu_info.txt
+ echo CPU Cores: >> cpu_info.txt
+ wmic cpu get NumberOfCores >> cpu_info.txt
+
+ REM CPU Threads
+ echo. >> cpu_info.txt
+ echo CPU Threads: >> cpu_info.txt
+ wmic cpu get NumberOfLogicalProcessors >> cpu_info.txt
+
+ echo CPU information saved to cpu_info.txt
+ type cpu_info.txt
+ pause
+ goto %return%
+
+:Tool_MemoryInfo
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Memory Information...
+ echo ---------------------------------------- > memory_info.txt
+ echo Memory Information Report - %date% %time% >> memory_info.txt
+ echo ---------------------------------------- >> memory_info.txt
+
+ REM Total Physical Memory
+ echo Total Physical Memory: >> memory_info.txt
+ wmic computersystem get TotalPhysicalMemory >> memory_info.txt
+
+ REM Available Physical Memory
+ echo. >> memory_info.txt
+ echo Available Physical Memory: >> memory_info.txt
+ wmic os get FreePhysicalMemory >> memory_info.txt
+
+ REM Detailed RAM Information
+ echo. >> memory_info.txt
+ echo Detailed RAM Information: >> memory_info.txt
+ powershell -Command "try { Get-WmiObject Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, Manufacturer, PartNumber | Format-Table -AutoSize } catch { 'Error retrieving RAM details' }" >> memory_info.txt 2>&1
+
+ echo Memory information saved to memory_info.txt
+ type memory_info.txt
+ pause
+ goto %return%
+
+:Tool_StorageInfo
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Storage Information...
+ echo ---------------------------------------- > storage_info.txt
+ echo Storage Information Report - %date% %time% >> storage_info.txt
+ echo ---------------------------------------- >> storage_info.txt
+
+ REM Disk Drives
+ echo Disk Drives: >> storage_info.txt
+ wmic diskdrive get Caption,Size,InterfaceType >> storage_info.txt
+
+ REM Disk Partitions
+ echo. >> storage_info.txt
+ echo Disk Partitions: >> storage_info.txt
+ wmic partition get DriveLetter,Size,Type >> storage_info.txt
+
+ REM Logical Disks
+ echo. >> storage_info.txt
+ echo Logical Disks: >> storage_info.txt
+ wmic logicaldisk get Caption,DriveType,FileSystem,FreeSpace,Size >> storage_info.txt
+
+ echo Storage information saved to storage_info.txt
+ type storage_info.txt
+ pause
+ goto %return%
+
+:Tool_NetworkInfo
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Information...
+ echo ---------------------------------------- > network_info.txt
+ echo Network Information Report - %date% %time% >> network_info.txt
+ echo ---------------------------------------- >> network_info.txt
+
+ REM Network Adapters
+ echo Network Adapters: >> network_info.txt
+ wmic nic get NetConnectionID,Name,NetEnabled,Speed >> network_info.txt
+
+ REM IP Addresses
+ echo. >> network_info.txt
+ echo IP Addresses: >> network_info.txt
+ ipconfig >> network_info.txt
+
+ REM MAC Addresses
+ echo. >> network_info.txt
+ echo MAC Addresses: >> network_info.txt
+ getmac /v /fo list >> network_info.txt
+
+ REM Default Gateway
+ echo. >> network_info.txt
+ echo Default Gateway: >> network_info.txt
+ ipconfig | findstr "Default Gateway" >> network_info.txt
+
+ REM DNS Servers
+ echo. >> network_info.txt
+ echo DNS Servers: >> network_info.txt
+ ipconfig /all | findstr "DNS Servers" >> network_info.txt
+
+ REM DHCP Server
+ echo. >> network_info.txt
+ echo DHCP Server: >> network_info.txt
+ ipconfig /all | findstr "DHCP Server" >> network_info.txt
+
+ echo Network information saved to network_info.txt
+ type network_info.txt
+ pause
+ goto %return%
+
+:Tool_SystemDetails
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: System Details...
+ echo ---------------------------------------- > system_details.txt
+ echo System Details Report - %date% %time% >> system_details.txt
+ echo ---------------------------------------- >> system_details.txt
+
+ REM BIOS Version
+ echo BIOS Version: >> system_details.txt
+ wmic bios get version >> system_details.txt
+
+ REM BIOS Manufacturer
+ echo. >> system_details.txt
+ echo BIOS Manufacturer: >> system_details.txt
+ wmic bios get manufacturer >> system_details.txt
+
+ REM System Serial Number
+ echo. >> system_details.txt
+ echo System Serial Number: >> system_details.txt
+ wmic bios get serialnumber >> system_details.txt
+
+ REM Environment Variables
+ echo. >> system_details.txt
+ echo Environment Variables: >> system_details.txt
+ set >> system_details.txt
+
+ REM System Date and Time
+ echo. >> system_details.txt
+ echo System Date and Time: >> system_details.txt
+ time /t >> system_details.txt
+ date /t >> system_details.txt
+
+ echo System details saved to system_details.txt
+ type system_details.txt
+ pause
+ goto %return%
+ 
+ :Tool_CompleteSystemProfile
+ set "return=SystemInfoMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Complete System Profile (All System Info Combined)...
+ echo ================================================== > complete_system_profile.txt
+ echo COMPLETE SYSTEM PROFILE REPORT - %date% %time% >> complete_system_profile.txt
+ echo ================================================== >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Basic System Information
+ echo [BASIC SYSTEM INFORMATION] >> complete_system_profile.txt
+ echo ========================== >> complete_system_profile.txt
+ systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type" /C:"Host Name" /C:"Domain" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Hardware Overview
+ echo [HARDWARE OVERVIEW] >> complete_system_profile.txt
+ echo =================== >> complete_system_profile.txt
+ wmic computersystem get manufacturer,model,totalphysicalmemory | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM CPU Information
+ echo [CPU INFORMATION] >> complete_system_profile.txt
+ echo ================= >> complete_system_profile.txt
+ wmic cpu get name,manufacturer,maxclockspeed,numberofcores,numberoflogicalprocessors | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Memory Information
+ echo [MEMORY INFORMATION] >> complete_system_profile.txt
+ echo ==================== >> complete_system_profile.txt
+ wmic computersystem get totalphysicalmemory | findstr /v "^$" >> complete_system_profile.txt
+ wmic memorychip get capacity,manufacturer,partnumber,speed | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Storage Information
+ echo [STORAGE INFORMATION] >> complete_system_profile.txt
+ echo ==================== >> complete_system_profile.txt
+ wmic diskdrive get model,size,mediatype | findstr /v "^$" >> complete_system_profile.txt
+ wmic logicaldisk get caption,filesystem,size,freespace | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Network Information
+ echo [NETWORK INFORMATION] >> complete_system_profile.txt
+ echo ==================== >> complete_system_profile.txt
+ ipconfig /all | findstr /C:"Host Name" /C:"Primary Dns Suffix" /C:"IPv4 Address" /C:"Default Gateway" /C:"DNS Servers" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM BIOS Information
+ echo [BIOS INFORMATION] >> complete_system_profile.txt
+ echo ================= >> complete_system_profile.txt
+ wmic bios get manufacturer,name,version,serialnumber | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM GPU Information
+ echo [GPU INFORMATION] >> complete_system_profile.txt
+ echo ================ >> complete_system_profile.txt
+ wmic path win32_VideoController get name,driverversion,adapterram | findstr /v "^$" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM System Uptime
+ echo [SYSTEM UPTIME] >> complete_system_profile.txt
+ echo ============== >> complete_system_profile.txt
+ net statistics workstation | findstr "since" >> complete_system_profile.txt
+ echo. >> complete_system_profile.txt
+ 
+ REM Installed Software Summary
+ echo [INSTALLED SOFTWARE SUMMARY] >> complete_system_profile.txt
+ echo ============================ >> complete_system_profile.txt
+ powershell -Command "Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher | Where-Object {$_.DisplayName} | Measure-Object | Select-Object Count" >> complete_system_profile.txt 2>nul
+ echo. >> complete_system_profile.txt
+ 
+ REM Security Status
+ echo [SECURITY STATUS] >> complete_system_profile.txt
+ echo ================= >> complete_system_profile.txt
+ powershell -Command "Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,BehaviorMonitorEnabled" >> complete_system_profile.txt 2>nul
+ echo. >> complete_system_profile.txt
+ 
+ echo ================================================== >> complete_system_profile.txt
+ echo END OF COMPLETE SYSTEM PROFILE REPORT >> complete_system_profile.txt
+ echo ================================================== >> complete_system_profile.txt
+ 
+ echo Complete system profile generated. Opening report...
+ type complete_system_profile.txt
+ pause
+ goto %return%
+ 
+ :Tool260
  set "return=MainMenu"
  if not "%1"=="" set "return=%1"
  echo Running Tool 260: Detailed RAM Information...
@@ -3647,7 +4132,244 @@ goto MainMenu
  pause
  goto %return%
 
-:Tool201
+:Tool_NetConnectivity
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Connectivity Tools...
+ echo ---------------------------------------- > net_connectivity.txt
+ echo Network Connectivity Report - %date% %time% >> net_connectivity.txt
+ echo ---------------------------------------- >> net_connectivity.txt
+
+ REM Ping Test
+ echo Ping Test (google.com): >> net_connectivity.txt
+ ping -n 5 google.com >> net_connectivity.txt
+
+ REM Network Speed Test
+ echo. >> net_connectivity.txt
+ echo Network Speed Test: >> net_connectivity.txt
+ powershell -Command {
+     try {
+         $start = Get-Date
+         $webClient = New-Object System.Net.WebClient
+         $webClient.DownloadFile('http://speedtest.tele2.net/1MB.zip', 'testfile.zip')
+         $end = Get-Date
+         $duration = ($end - $start).TotalSeconds
+         "Download time: $duration seconds"
+         Remove-Item testfile.zip -ErrorAction SilentlyContinue
+     } catch {
+         "Error testing network speed"
+     }
+ } >> net_connectivity.txt 2>&1
+
+ REM Flush DNS
+ echo. >> net_connectivity.txt
+ echo Flushing DNS Cache: >> net_connectivity.txt
+ ipconfig /flushdns >> net_connectivity.txt
+
+ echo Network connectivity report saved to net_connectivity.txt
+ type net_connectivity.txt
+ pause
+ goto %return%
+
+:Tool_NetConfig
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Configuration Tools...
+ echo ---------------------------------------- > net_config.txt
+ echo Network Configuration Report - %date% %time% >> net_config.txt
+ echo ---------------------------------------- >> net_config.txt
+
+ REM IP Configuration
+ echo IP Configuration: >> net_config.txt
+ ipconfig /all >> net_config.txt
+
+ REM Network Adapters
+ echo. >> net_config.txt
+ echo Network Adapters: >> net_config.txt
+ powershell -Command "try { Get-NetAdapter | Format-Table Name,InterfaceDescription,Status,LinkSpeed -AutoSize } catch { 'Error retrieving network adapters' }" >> net_config.txt 2>&1
+
+ REM Routing Table
+ echo. >> net_config.txt
+ echo Routing Table: >> net_config.txt
+ route print >> net_config.txt
+
+ REM DNS Configuration
+ echo. >> net_config.txt
+ echo DNS Configuration: >> net_config.txt
+ ipconfig /all | findstr "DNS" >> net_config.txt
+
+ echo Network configuration report saved to net_config.txt
+ type net_config.txt
+ pause
+ goto %return%
+
+:Tool_FirewallMgmt
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Firewall Management Tools...
+ echo ---------------------------------------- > firewall_mgmt.txt
+ echo Firewall Management Report - %date% %time% >> firewall_mgmt.txt
+ echo ---------------------------------------- >> firewall_mgmt.txt
+
+ REM Firewall Status
+ echo Firewall Status: >> firewall_mgmt.txt
+ netsh advfirewall show currentprofile >> firewall_mgmt.txt
+
+ REM Firewall Rules
+ echo. >> firewall_mgmt.txt
+ echo Firewall Rules: >> firewall_mgmt.txt
+ netsh advfirewall firewall show rule name=all >> firewall_mgmt.txt
+
+ echo Firewall management report saved to firewall_mgmt.txt
+ type firewall_mgmt.txt
+ pause
+ goto %return%
+
+:Tool_NetSharing
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Sharing Tools...
+ echo ---------------------------------------- > net_sharing.txt
+ echo Network Sharing Report - %date% %time% >> net_sharing.txt
+ echo ---------------------------------------- >> net_sharing.txt
+
+ REM Network Shares
+ echo Network Shares: >> net_sharing.txt
+ net share >> net_sharing.txt
+
+ REM Remote Desktop Status
+ echo. >> net_sharing.txt
+ echo Remote Desktop Status: >> net_sharing.txt
+ powershell -Command "try { Get-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -Name fDenyTSConnections } catch { 'Error retrieving RDP status' }" >> net_sharing.txt 2>&1
+
+ REM VPN Status
+ echo. >> net_sharing.txt
+ echo VPN Status: >> net_sharing.txt
+ powershell -Command "try { Get-VpnConnection } catch { 'No VPN connections found or error retrieving VPN status' }" >> net_sharing.txt 2>&1
+
+ echo Network sharing report saved to net_sharing.txt
+ type net_sharing.txt
+ pause
+ goto %return%
+
+:Tool_NetDiagnostics
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Diagnostics Tools...
+ echo ---------------------------------------- > net_diagnostics.txt
+ echo Network Diagnostics Report - %date% %time% >> net_diagnostics.txt
+ echo ---------------------------------------- >> net_diagnostics.txt
+
+ REM Winsock Configuration
+ echo Winsock Configuration: >> net_diagnostics.txt
+ netsh winsock show catalog >> net_diagnostics.txt
+
+ REM Proxy Settings
+ echo. >> net_diagnostics.txt
+ echo Proxy Settings: >> net_diagnostics.txt
+ netsh winhttp show proxy >> net_diagnostics.txt
+
+ REM Active Connections
+ echo. >> net_diagnostics.txt
+ echo Active TCP Connections: >> net_diagnostics.txt
+ netstat -ano | findstr "ESTABLISHED" >> net_diagnostics.txt
+
+ REM Network Statistics
+ echo. >> net_diagnostics.txt
+ echo Network Interface Statistics: >> net_diagnostics.txt
+ netstat -e -s >> net_diagnostics.txt
+
+ echo Network diagnostics report saved to net_diagnostics.txt
+ type net_diagnostics.txt
+ pause
+ goto %return%
+ 
+ :Tool_NetworkHealthSuite
+ set "return=NetworkingMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool: Network Health Suite (Complete Network Analysis)...
+ echo ================================================ > network_health_suite.txt
+ echo NETWORK HEALTH SUITE REPORT - %date% %time% >> network_health_suite.txt
+ echo ================================================ >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Internet Connectivity Test
+ echo [INTERNET CONNECTIVITY TEST] >> network_health_suite.txt
+ echo ============================ >> network_health_suite.txt
+ ping -n 4 8.8.8.8 >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM DNS Resolution Test
+ echo [DNS RESOLUTION TEST] >> network_health_suite.txt
+ echo ===================== >> network_health_suite.txt
+ nslookup google.com >> network_health_suite.txt
+ nslookup github.com >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Network Configuration
+ echo [NETWORK CONFIGURATION] >> network_health_suite.txt
+ echo ======================= >> network_health_suite.txt
+ ipconfig /all >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Network Interfaces Status
+ echo [NETWORK INTERFACES STATUS] >> network_health_suite.txt
+ echo =========================== >> network_health_suite.txt
+ powershell -Command "Get-NetAdapter | Select-Object Name,Status,LinkSpeed,MtuSize | Format-Table -AutoSize" >> network_health_suite.txt 2>nul
+ echo. >> network_health_suite.txt
+ 
+ REM Firewall Status
+ echo [FIREWALL STATUS] >> network_health_suite.txt
+ echo ================ >> network_health_suite.txt
+ netsh advfirewall show currentprofile >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Active Network Connections
+ echo [ACTIVE NETWORK CONNECTIONS] >> network_health_suite.txt
+ echo ============================ >> network_health_suite.txt
+ netstat -ano | findstr "ESTABLISHED" >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM WiFi Networks (if applicable)
+ echo [WIFI NETWORK INFORMATION] >> network_health_suite.txt
+ echo ========================== >> network_health_suite.txt
+ netsh wlan show interfaces >> network_health_suite.txt 2>nul
+ echo. >> network_health_suite.txt
+ 
+ REM Network Performance Test
+ echo [NETWORK PERFORMANCE TEST] >> network_health_suite.txt
+ echo ========================== >> network_health_suite.txt
+ ping -n 10 www.google.com | findstr /C:"Minimum" /C:"Maximum" /C:"Average" >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Routing Table
+ echo [ROUTING TABLE] >> network_health_suite.txt
+ echo ============== >> network_health_suite.txt
+ route print | findstr /C:"Network Destination" /C:"Netmask" /C:"Gateway" /C:"Interface" >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM DNS Cache
+ echo [DNS CACHE STATUS] >> network_health_suite.txt
+ echo ================== >> network_health_suite.txt
+ ipconfig /displaydns | findstr /C:"Record Name" /C:"Record Type" | head -20 >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ REM Network Shares
+ echo [NETWORK SHARES] >> network_health_suite.txt
+ echo =============== >> network_health_suite.txt
+ net share >> network_health_suite.txt
+ echo. >> network_health_suite.txt
+ 
+ echo ================================================ >> network_health_suite.txt
+ echo END OF NETWORK HEALTH SUITE REPORT >> network_health_suite.txt
+ echo ================================================ >> network_health_suite.txt
+ 
+ echo Network health suite analysis complete. Opening report...
+ type network_health_suite.txt
+ pause
+ goto %return%
+ 
+ :Tool201
 echo Running Tool 201: Show Available Networks...
 netsh wlan show networks
 pause
@@ -3702,6 +4424,67 @@ goto WiFiMenu
 :Tool209
 echo Running Tool 209: Disable WiFi...
 netsh interface set interface "Wi-Fi" disabled
+pause
+goto WiFiMenu
+
+:Tool_WiFiDetectAll
+echo Running Tool: Detect All Available WiFi Networks (Enhanced)...
+echo ---------------------------------------- > wifi_networks_detailed.txt
+echo Available WiFi Networks Report - %date% %time% >> wifi_networks_detailed.txt
+echo ---------------------------------------- >> wifi_networks_detailed.txt
+
+REM Get detailed network information
+echo Detailed Network Information: >> wifi_networks_detailed.txt
+netsh wlan show networks mode=bssid >> wifi_networks_detailed.txt
+
+REM Get network interface information
+echo. >> wifi_networks_detailed.txt
+echo Network Interface Information: >> wifi_networks_detailed.txt
+netsh wlan show interfaces >> wifi_networks_detailed.txt
+
+REM Get wireless capabilities
+echo. >> wifi_networks_detailed.txt
+echo Wireless Capabilities: >> wifi_networks_detailed.txt
+netsh wlan show drivers >> wifi_networks_detailed.txt
+
+echo Enhanced WiFi network detection complete. Results saved to wifi_networks_detailed.txt
+type wifi_networks_detailed.txt
+pause
+goto WiFiMenu
+
+:Tool_WiFiShowAllKeys
+echo Running Tool: Show All Saved WiFi Passwords...
+echo ---------------------------------------- > wifi_passwords_all.txt
+echo All Saved WiFi Passwords Report - %date% %time% >> wifi_passwords_all.txt
+echo ---------------------------------------- >> wifi_passwords_all.txt
+
+REM Get all saved WiFi profiles
+echo Saved WiFi Profiles: >> wifi_passwords_all.txt
+netsh wlan show profiles >> wifi_passwords_all.txt
+
+echo. >> wifi_passwords_all.txt
+echo WiFi Passwords and Security Keys: >> wifi_passwords_all.txt
+echo ================================= >> wifi_passwords_all.txt
+
+REM Extract all profile names and get their passwords
+for /f "tokens=2 delims=:" %%a in ('netsh wlan show profiles ^| find "All User Profile"') do (
+    set "profile=%%a"
+    setlocal enabledelayedexpansion
+    set "profile=!profile:~1!"
+    echo. >> wifi_passwords_all.txt
+    echo Profile: !profile! >> wifi_passwords_all.txt
+    echo ------------------- >> wifi_passwords_all.txt
+    netsh wlan show profile name="!profile!" key=clear | findstr /C:"SSID name" /C:"Authentication" /C:"Cipher" /C:"Security key" /C:"Key Content" >> wifi_passwords_all.txt
+    endlocal
+)
+
+echo. >> wifi_passwords_all.txt
+echo Security Note: WiFi passwords are sensitive information. >> wifi_passwords_all.txt
+echo This report contains all saved network passwords. >> wifi_passwords_all.txt
+echo Keep this file secure and delete when no longer needed. >> wifi_passwords_all.txt
+
+echo All WiFi passwords extracted. Results saved to wifi_passwords_all.txt
+type wifi_passwords_all.txt
 pause
 goto WiFiMenu
 
