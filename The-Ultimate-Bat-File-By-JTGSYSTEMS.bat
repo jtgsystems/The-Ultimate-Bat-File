@@ -85,10 +85,11 @@ echo 13. Modern Windows Features
 echo 14. Disk Health Monitor
 echo 15. Security Center
 echo 16. Advanced Diagnostics
-echo 17. Sponsorship
-echo 18. Exit
+echo 17. Combo Options
+echo 18. Sponsorship
+echo 19. Exit
 echo.
-set /p "choice=Enter your choice (1-18): "
+set /p "choice=Enter your choice (1-19): "
 
 if "%choice%"=="1" goto SystemInfoMenu
 if "%choice%"=="2" goto SystemMaintenanceMenu
@@ -106,8 +107,9 @@ if "%choice%"=="13" goto ModernWindowsMenu
 if "%choice%"=="14" goto DiskHealthMenu
 if "%choice%"=="15" goto SecurityCenterMenu
 if "%choice%"=="16" goto AdvancedDiagnosticsMenu
-if "%choice%"=="17" goto SponsorshipMenu
-if "%choice%"=="18" goto Exit
+if "%choice%"=="17" goto ComboMenu
+if "%choice%"=="18" goto SponsorshipMenu
+if "%choice%"=="19" goto Exit
 
 echo Invalid choice. Please try again.
 goto MainMenu
@@ -147,9 +149,12 @@ echo 27. Check Winsock Configuration
 echo 28. Check Proxy Settings
 echo 29. Check Environment Variables
 echo 30. Check System Date and Time
-echo 31. Back to Main Menu
+echo 31. Detailed RAM Information
+echo 32. GPU Information
+echo 33. Windows Activation Status
+echo 34. Back to Main Menu
 echo.
-set /p "choice=Enter your choice (1-31): "
+set /p "choice=Enter your choice (1-34): "
 
 if "%choice%"=="1" goto Tool018
 if "%choice%"=="2" goto Tool144
@@ -181,7 +186,10 @@ if "%choice%"=="27" goto Tool169
 if "%choice%"=="28" goto Tool170
 if "%choice%"=="29" goto Tool185
 if "%choice%"=="30" goto Tool186
-if "%choice%"=="31" goto MainMenu
+if "%choice%"=="31" goto Tool260
+if "%choice%"=="32" goto Tool270
+if "%choice%"=="33" goto Tool280
+if "%choice%"=="34" goto MainMenu
 
 echo Invalid choice. Please try again.
 goto SystemInfoMenu
@@ -2016,85 +2024,91 @@ exit /b 0
 
 :: Tool Definitions (Tools 1-200 - already defined previously)
 :Tool001
-echo Running Tool 001: Enhanced System Security Scan...
-echo ---------------------------------------- > security_scan.txt
-echo Security Scan Report - %date% %time% >> security_scan.txt
-echo ---------------------------------------- >> security_scan.txt
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 001: Enhanced System Security Scan...
+ echo ---------------------------------------- > security_scan.txt
+ echo Security Scan Report - %date% %time% >> security_scan.txt
+ echo ---------------------------------------- >> security_scan.txt
 
-REM Check Windows Defender
-echo Checking Windows Defender Status... >> security_scan.txt
-powershell -Command "Get-MpComputerStatus | Select-Object AMRunningMode,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated" >> security_scan.txt
+ REM Check Windows Defender
+ echo Checking Windows Defender Status... >> security_scan.txt
+ powershell -Command "try { Get-MpComputerStatus | Select-Object AMRunningMode,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated } catch { 'Error retrieving Defender status' }" >> security_scan.txt 2>&1
 
-REM Check for critical Windows updates
-echo. >> security_scan.txt
-echo Checking Windows Updates... >> security_scan.txt
-powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 5 HotFixID,InstalledOn,Description" >> security_scan.txt
+ REM Check for critical Windows updates
+ echo. >> security_scan.txt
+ echo Checking Windows Updates... >> security_scan.txt
+ powershell -Command "try { Get-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 5 HotFixID,InstalledOn,Description } catch { 'Error retrieving update info' }" >> security_scan.txt 2>&1
 
-REM Check firewall status
-echo. >> security_scan.txt
-echo Checking Firewall Status... >> security_scan.txt
-netsh advfirewall show allprofiles state >> security_scan.txt
+ REM Check firewall status
+ echo. >> security_scan.txt
+ echo Checking Firewall Status... >> security_scan.txt
+ netsh advfirewall show allprofiles state >> security_scan.txt 2>&1
 
-REM Run quick scan
-echo. >> security_scan.txt
-echo Initiating Quick Scan... >> security_scan.txt
-"%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1 >> security_scan.txt
+ REM Run quick scan
+ echo. >> security_scan.txt
+ echo Initiating Quick Scan... >> security_scan.txt
+ "%ProgramFiles%\Windows Defender\MpCmdRun.exe" -Scan -ScanType 1 >> security_scan.txt 2>&1
 
-echo Security scan complete. Results saved to security_scan.txt
-type security_scan.txt
-pause
-goto MainMenu
+ echo Security scan complete. Results saved to security_scan.txt
+ type security_scan.txt
+ pause
+ goto %return%
 
 :Tool002
-echo Running Tool 002: Enhanced Performance Monitor...
-echo ---------------------------------------- > performance_monitor.txt
-echo Performance Monitor Report - %date% %time% >> performance_monitor.txt
-echo ---------------------------------------- >> performance_monitor.txt
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 002: Enhanced Performance Monitor...
+ echo ---------------------------------------- > performance_monitor.txt
+ echo Performance Monitor Report - %date% %time% >> performance_monitor.txt
+ echo ---------------------------------------- >> performance_monitor.txt
 
-REM CPU Usage over 5 seconds
-echo Monitoring CPU Usage... >> performance_monitor.txt
-for /L %%i in (1,1,5) do (
-    wmic cpu get loadpercentage | find /v "LoadPercentage" >> performance_monitor.txt
-    timeout /t 1 /nobreak >nul
-)
+ REM CPU Usage over 5 seconds
+ echo Monitoring CPU Usage... >> performance_monitor.txt
+ for /L %%i in (1,1,5) do (
+     wmic cpu get loadpercentage | find /v "LoadPercentage" >> performance_monitor.txt
+     timeout /t 1 /nobreak >nul
+ )
 
-REM Memory Usage
-echo. >> performance_monitor.txt
-echo Memory Usage: >> performance_monitor.txt
-powershell -Command "Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='Memory Used(GB)';Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1MB, 2)}}, @{Name='Memory Free(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB, 2)}}" >> performance_monitor.txt
+ REM Memory Usage
+ echo. >> performance_monitor.txt
+ echo Memory Usage: >> performance_monitor.txt
+ powershell -Command "try { Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='Memory Used(GB)';Expression={[math]::Round(($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)/1MB, 2)}}, @{Name='Memory Free(GB)';Expression={[math]::Round($_.FreePhysicalMemory/1MB, 2)}} } catch { 'Error retrieving memory usage' }" >> performance_monitor.txt 2>&1
 
-REM Disk Usage
-echo. >> performance_monitor.txt
-echo Disk Usage: >> performance_monitor.txt
-powershell -Command "Get-Volume | Where-Object {$_.DriveLetter} | Select-Object DriveLetter, @{Name='Size(GB)';Expression={[math]::Round($_.Size/1GB,2)}}, @{Name='FreeSpace(GB)';Expression={[math]::Round($_.SizeRemaining/1GB,2)}}" >> performance_monitor.txt
+ REM Disk Usage
+ echo. >> performance_monitor.txt
+ echo Disk Usage: >> performance_monitor.txt
+ powershell -Command "try { Get-Volume | Where-Object {$_.DriveLetter} | Select-Object DriveLetter, @{Name='Size(GB)';Expression={[math]::Round($_.Size/1GB,2)}}, @{Name='FreeSpace(GB)';Expression={[math]::Round($_.SizeRemaining/1GB,2)}} } catch { 'Error retrieving disk usage' }" >> performance_monitor.txt 2>&1
 
-type performance_monitor.txt
-pause
-goto MainMenu
+ type performance_monitor.txt
+ pause
+ goto %return%
 
 :Tool003
-echo Running Tool 003: Advanced Memory Analysis...
-echo ---------------------------------------- > memory_analysis.txt
-echo Memory Analysis Report - %date% %time% >> memory_analysis.txt
-echo ---------------------------------------- >> memory_analysis.txt
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 003: Advanced Memory Analysis...
+ echo ---------------------------------------- > memory_analysis.txt
+ echo Memory Analysis Report - %date% %time% >> memory_analysis.txt
+ echo ---------------------------------------- >> memory_analysis.txt
 
-REM Physical Memory Status
-echo Physical Memory Information: >> memory_analysis.txt
-powershell -Command "Get-CimInstance Win32_PhysicalMemory | Format-Table Manufacturer,Capacity,Speed,DeviceLocator -AutoSize" >> memory_analysis.txt
+ REM Physical Memory Status
+ echo Physical Memory Information: >> memory_analysis.txt
+ powershell -Command "try { Get-CimInstance Win32_PhysicalMemory | Format-Table Manufacturer,Capacity,Speed,DeviceLocator -AutoSize } catch { 'Error retrieving physical memory info' }" >> memory_analysis.txt 2>&1
 
-REM Memory Usage by Process
-echo. >> memory_analysis.txt
-echo Top Memory-Consuming Processes: >> memory_analysis.txt
-powershell -Command "Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 ProcessName,@{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet/1MB,2)}} | Format-Table -AutoSize" >> memory_analysis.txt
+ REM Memory Usage by Process
+ echo. >> memory_analysis.txt
+ echo Top Memory-Consuming Processes: >> memory_analysis.txt
+ powershell -Command "try { Get-Process | Sort-Object WorkingSet -Descending | Select-Object -First 10 ProcessName,@{Name='Memory(MB)';Expression={[math]::Round($_.WorkingSet/1MB,2)}} | Format-Table -AutoSize } catch { 'Error retrieving process memory' }" >> memory_analysis.txt 2>&1
 
-REM Page File Usage
-echo. >> memory_analysis.txt
-echo Page File Usage: >> memory_analysis.txt
-powershell -Command "Get-CimInstance Win32_PageFileUsage | Select-Object Name,CurrentUsage,PeakUsage" >> memory_analysis.txt
+ REM Page File Usage
+ echo. >> memory_analysis.txt
+ echo Page File Usage: >> memory_analysis.txt
+ powershell -Command "try { Get-CimInstance Win32_PageFileUsage | Select-Object Name,CurrentUsage,PeakUsage } catch { 'Error retrieving page file usage' }" >> memory_analysis.txt 2>&1
 
-type memory_analysis.txt
-pause
-goto MainMenu
+ type memory_analysis.txt
+ pause
+ goto %return%
 
 :Tool004
 echo Running Tool 004: Enhanced Process Analysis...
@@ -2441,10 +2455,12 @@ pause
 goto MainMenu
 
 :Tool037
-echo Running Tool 037: Check Windows Firewall Status...
-netsh advfirewall show currentprofile
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 037: Check Windows Firewall Status...
+ netsh advfirewall show currentprofile
+ pause
+ goto %return%
 
 :Tool038
 echo Running Tool 038: Enable Windows Firewall...
@@ -3166,16 +3182,20 @@ pause
 goto MainMenu
 
 :Tool146
-echo Running Tool 146: Check System Model...
-wmic computersystem get model
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 146: Check System Model...
+ wmic computersystem get model
+ pause
+ goto %return%
 
 :Tool147
-echo Running Tool 147: Check System Manufacturer...
-wmic computersystem get manufacturer
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 147: Check System Manufacturer...
+ wmic computersystem get manufacturer
+ pause
+ goto %return%
 
 :Tool148
 echo Running Tool 148: Check OS Version...
@@ -3196,22 +3216,28 @@ pause
 goto MainMenu
 
 :Tool151
-echo Running Tool 151: Check System Serial Number...
-wmic bios get serialnumber
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 151: Check System Serial Number...
+ wmic bios get serialnumber
+ pause
+ goto %return%
 
 :Tool152
-echo Running Tool 152: Check BIOS Version...
-wmic bios get version
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 152: Check BIOS Version...
+ wmic bios get version
+ pause
+ goto %return%
 
 :Tool153
-echo Running Tool 153: Check BIOS Manufacturer...
-wmic bios get manufacturer
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 153: Check BIOS Manufacturer...
+ wmic bios get manufacturer
+ pause
+ goto %return%
 
 :Tool154
 echo Running Tool 154: Check CPU Name...
@@ -3220,22 +3246,28 @@ pause
 goto MainMenu
 
 :Tool155
-echo Running Tool 155: Check CPU Speed...
-wmic cpu get CurrentClockSpeed
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 155: Check CPU Speed...
+ wmic cpu get CurrentClockSpeed
+ pause
+ goto %return%
 
 :Tool156
-echo Running Tool 156: Check CPU Cores...
-wmic cpu get NumberOfCores
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 156: Check CPU Cores...
+ wmic cpu get NumberOfCores
+ pause
+ goto %return%
 
 :Tool157
-echo Running Tool 157: Check CPU Threads...
-wmic cpu get NumberOfLogicalProcessors
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 157: Check CPU Threads...
+ wmic cpu get NumberOfLogicalProcessors
+ pause
+ goto %return%
 
 :Tool158
 echo Running Tool 158: Check Total Physical Memory...
@@ -3244,10 +3276,12 @@ pause
 goto MainMenu
 
 :Tool159
-echo Running Tool 159: Check Available Physical Memory...
-wmic os get FreePhysicalMemory
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 159: Check Available Physical Memory...
+ wmic os get FreePhysicalMemory
+ pause
+ goto %return%
 
 :Tool160
 echo Running Tool 160: Check Disk Drives...
@@ -3256,16 +3290,20 @@ pause
 goto MainMenu
 
 :Tool161
-echo Running Tool 161: Check Disk Partitions...
-wmic partition get DriveLetter,Size,Type
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 161: Check Disk Partitions...
+ wmic partition get DriveLetter,Size,Type
+ pause
+ goto %return%
 
 :Tool162
-echo Running Tool 162: Check Logical Disks...
-wmic logicaldisk get Caption,DriveType,FileSystem,FreeSpace,Size
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 162: Check Logical Disks...
+ wmic logicaldisk get Caption,DriveType,FileSystem,FreeSpace,Size
+ pause
+ goto %return%
 
 :Tool163
 echo Running Tool 163: Check Network Adapters...
@@ -3484,16 +3522,130 @@ pause
 goto MainMenu
 
 :Tool199
-echo Running Tool 199: Check System Temperature...
-start sensors
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 199: Check System Temperature...
+ powershell -Command "try { Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace 'root/wmi' | Select-Object InstanceName, @{Name='Temperature(C)';Expression={[math]::Round(($_.CurrentTemperature - 2732) / 10.0, 2)}} | Format-Table -AutoSize } catch { 'Temperature sensors not available or not supported' }" >> temperature_report.txt 2>&1
+ echo Temperature report saved to temperature_report.txt
+ type temperature_report.txt
+ pause
+ goto %return%
 
 :Tool200
-echo Running Tool 200: Check Fan Speed...
-wmic fan get name,CurrentSpeed
-pause
-goto MainMenu
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 200: Check Fan Speed...
+ wmic fan get name,CurrentSpeed
+ pause
+ goto %return%
+
+:Tool260
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 260: Detailed RAM Information...
+ echo ---------------------------------------- > ram_details.txt
+ echo Detailed RAM Information - %date% %time% >> ram_details.txt
+ echo ---------------------------------------- >> ram_details.txt
+
+ REM Physical Memory Details
+ echo Physical Memory Details: >> ram_details.txt
+ powershell -Command "try { Get-WmiObject Win32_PhysicalMemory | Select-Object BankLabel, DeviceLocator, Capacity, Speed, Manufacturer, PartNumber, SerialNumber | Format-Table -AutoSize } catch { 'Error retrieving RAM details' }" >> ram_details.txt 2>&1
+
+ REM Memory Configuration
+ echo. >> ram_details.txt
+ echo Memory Configuration: >> ram_details.txt
+ powershell -Command "try { Get-WmiObject Win32_PhysicalMemoryArray | Select-Object MaxCapacity, MemoryDevices | Format-Table -AutoSize } catch { 'Error retrieving memory config' }" >> ram_details.txt 2>&1
+
+ REM Memory Performance
+ echo. >> ram_details.txt
+ echo Memory Performance: >> ram_details.txt
+ powershell -Command "try { Get-Counter '\Memory\Available MBytes', '\Memory\Committed Bytes', '\Memory\Pool Paged Bytes', '\Memory\Pool Nonpaged Bytes' | Format-Table -AutoSize } catch { 'Error retrieving memory performance' }" >> ram_details.txt 2>&1
+
+ REM RAM Type and Form Factor
+ echo. >> ram_details.txt
+ echo RAM Type and Form Factor: >> ram_details.txt
+ powershell -Command "try { Get-WmiObject Win32_PhysicalMemory | Select-Object SMBIOSMemoryType, FormFactor | Format-Table -AutoSize } catch { 'Error retrieving RAM type' }" >> ram_details.txt 2>&1
+
+ echo Detailed RAM information saved to ram_details.txt
+ type ram_details.txt
+ pause
+ goto %return%
+
+:Tool270
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 270: GPU Information...
+ echo ---------------------------------------- > gpu_info.txt
+ echo GPU Information - %date% %time% >> gpu_info.txt
+ echo ---------------------------------------- >> gpu_info.txt
+
+ REM GPU Details
+ echo GPU Details: >> gpu_info.txt
+ powershell -Command "try { Get-WmiObject Win32_VideoController | Select-Object Name, VideoProcessor, DriverVersion, AdapterRAM, CurrentHorizontalResolution, CurrentVerticalResolution, CurrentRefreshRate | Format-Table -AutoSize } catch { 'Error retrieving GPU details' }" >> gpu_info.txt 2>&1
+
+ REM GPU Memory
+ echo. >> gpu_info.txt
+ echo GPU Memory Information: >> gpu_info.txt
+ powershell -Command "try { Get-WmiObject Win32_VideoController | Select-Object Name, @{Name='AdapterRAM(GB)';Expression={[math]::Round($_.AdapterRAM/1GB, 2)}} | Format-Table -AutoSize } catch { 'Error retrieving GPU memory' }" >> gpu_info.txt 2>&1
+
+ REM GPU Driver Information
+ echo. >> gpu_info.txt
+ echo GPU Driver Information: >> gpu_info.txt
+ powershell -Command "try { Get-WmiObject Win32_VideoController | Select-Object Name, DriverVersion, DriverDate, VideoModeDescription | Format-Table -AutoSize } catch { 'Error retrieving GPU driver info' }" >> gpu_info.txt 2>&1
+
+ REM GPU Performance
+ echo. >> gpu_info.txt
+ echo GPU Performance Metrics: >> gpu_info.txt
+ powershell -Command "try { Get-Counter '\GPU Engine(*)\Utilization Percentage' -ErrorAction SilentlyContinue | Format-Table -AutoSize } catch { 'Error retrieving GPU performance' }" >> gpu_info.txt 2>&1
+
+ echo GPU information saved to gpu_info.txt
+ type gpu_info.txt
+ pause
+ goto %return%
+
+:Tool280
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 280: Windows Activation Status...
+ echo ---------------------------------------- > activation_status.txt
+ echo Windows Activation Status - %date% %time% >> activation_status.txt
+ echo ---------------------------------------- >> activation_status.txt
+
+ REM Activation Status
+ echo Windows Activation Status: >> activation_status.txt
+ cscript //nologo "%systemroot%\system32\slmgr.vbs" /dli >> activation_status.txt 2>&1
+
+ REM License Information
+ echo. >> activation_status.txt
+ echo License Information: >> activation_status.txt
+ cscript //nologo "%systemroot%\system32\slmgr.vbs" /dlv >> activation_status.txt 2>&1
+
+ REM Product Key
+ echo. >> activation_status.txt
+ echo Product Key Information: >> activation_status.txt
+ powershell -Command "try { (Get-WmiObject -query 'select * from SoftwareLicensingService').OA3xOriginalProductKey } catch { 'Error retrieving product key' }" >> activation_status.txt 2>&1
+
+ echo Windows activation status saved to activation_status.txt
+ type activation_status.txt
+ pause
+ goto %return%
+
+:Tool290
+ set "return=MainMenu"
+ if not "%1"=="" set "return=%1"
+ echo Running Tool 290: Check PCI Devices...
+ echo ---------------------------------------- > pci_devices.txt
+ echo PCI Devices Report - %date% %time% >> pci_devices.txt
+ echo ---------------------------------------- >> pci_devices.txt
+
+ REM PCI Devices
+ echo PCI Devices: >> pci_devices.txt
+ powershell -Command "try { Get-WmiObject Win32_PnPEntity | Where-Object {$_.PNPClass -eq 'Net' -or $_.PNPClass -eq 'Display' -or $_.PNPClass -eq 'Audio' -or $_.PNPClass -eq 'SCSIAdapter'} | Select-Object Name, Manufacturer, PNPDeviceID | Format-Table -AutoSize } catch { 'Error retrieving PCI devices' }" >> pci_devices.txt 2>&1
+
+ echo PCI devices report saved to pci_devices.txt
+ type pci_devices.txt
+ pause
+ goto %return%
 
 :Tool201
 echo Running Tool 201: Show Available Networks...
@@ -3784,18 +3936,161 @@ powershell "Get-MpPreference | Select-Object EnableControlledFolderAccess"
 pause
 goto SecurityCenterMenu
 
+:ComboMenu
+ cls
+ echo.
+ echo Combo Options
+ echo -------------
+ echo 1. Quick System Health Check (Runs multiple diagnostic tools)
+ echo 2. Full System Audit (Comprehensive analysis)
+ echo 3. Network Connectivity Suite
+ echo 4. Security Assessment Package
+ echo 5. Performance Optimization Bundle
+ echo 6. Hardware Inventory Report
+ echo 7. Back to Main Menu
+ echo.
+ set /p "choice=Enter your choice (1-7): "
+
+ if "%choice%"=="1" goto Combo_QuickHealth
+ if "%choice%"=="2" goto Combo_FullAudit
+ if "%choice%"=="3" goto Combo_NetworkSuite
+ if "%choice%"=="4" goto Combo_SecurityAssessment
+ if "%choice%"=="5" goto Combo_PerformanceBundle
+ if "%choice%"=="6" goto Combo_HardwareInventory
+ if "%choice%"=="7" goto MainMenu
+
+ echo Invalid choice. Please try again.
+ goto ComboMenu
+
+:Combo_QuickHealth
+ echo Running Quick System Health Check...
+ echo ---------------------------------------- > quick_health.txt
+ echo Quick System Health Check - %date% %time% >> quick_health.txt
+ echo ---------------------------------------- >> quick_health.txt
+
+ REM Run CPU, Memory, Disk checks
+ call :Tool002 ComboMenu
+ call :Tool003 ComboMenu
+ call :Tool001 ComboMenu
+ call :Tool037 ComboMenu
+
+ echo Quick health check complete. Results saved to quick_health.txt
+ type quick_health.txt
+ pause
+ goto ComboMenu
+
+:Combo_FullAudit
+ echo Running Full System Audit...
+ echo ---------------------------------------- > full_audit.txt
+ echo Full System Audit - %date% %time% >> full_audit.txt
+ echo ---------------------------------------- >> full_audit.txt
+
+ REM Run comprehensive checks
+ call :Tool_SystemHealthReport ComboMenu
+ call :Tool_HardwareDiagnostics ComboMenu
+ call :Tool_SecurityScan ComboMenu
+ call :Tool_PerformanceAnalysis ComboMenu
+
+ echo Full audit complete. Results saved to full_audit.txt
+ type full_audit.txt
+ pause
+ goto ComboMenu
+
+:Combo_NetworkSuite
+ echo Running Network Connectivity Suite...
+ echo ---------------------------------------- > network_suite.txt
+ echo Network Suite Report - %date% %time% >> network_suite.txt
+ echo ---------------------------------------- >> network_suite.txt
+
+ REM Run network checks
+ call :Tool005 ComboMenu
+ call :Tool050 ComboMenu
+ call :Tool_NetTest ComboMenu
+
+ echo Network suite complete. Results saved to network_suite.txt
+ type network_suite.txt
+ pause
+ goto ComboMenu
+
+:Combo_SecurityAssessment
+ echo Running Security Assessment Package...
+ echo ---------------------------------------- > security_assessment.txt
+ echo Security Assessment - %date% %time% >> security_assessment.txt
+ echo ---------------------------------------- >> security_assessment.txt
+
+ REM Run security checks
+ call :Tool_SecurityScan ComboMenu
+ call :Tool037 ComboMenu
+ call :Tool077 ComboMenu
+ call :Tool078 ComboMenu
+
+ echo Security assessment complete. Results saved to security_assessment.txt
+ type security_assessment.txt
+ pause
+ goto ComboMenu
+
+:Combo_PerformanceBundle
+ echo Running Performance Optimization Bundle...
+ echo ---------------------------------------- > performance_bundle.txt
+ echo Performance Bundle Report - %date% %time% >> performance_bundle.txt
+ echo ---------------------------------------- >> performance_bundle.txt
+
+ REM Run performance checks
+ call :Tool_PerformanceAnalysis ComboMenu
+ call :Tool042 ComboMenu
+ call :Tool197 ComboMenu
+ call :Tool198 ComboMenu
+
+ echo Performance bundle complete. Results saved to performance_bundle.txt
+ type performance_bundle.txt
+ pause
+ goto ComboMenu
+
+:Combo_HardwareInventory
+ echo Running Hardware Inventory Report...
+ echo ---------------------------------------- > hardware_inventory.txt
+ echo Hardware Inventory - %date% %time% >> hardware_inventory.txt
+ echo ---------------------------------------- >> hardware_inventory.txt
+
+ REM Run hardware checks
+ call :Tool_HardwareDiagnostics ComboMenu
+ call :Tool146 ComboMenu
+ call :Tool147 ComboMenu
+ call :Tool151 ComboMenu
+ call :Tool152 ComboMenu
+ call :Tool153 ComboMenu
+ call :Tool154 ComboMenu
+ call :Tool155 ComboMenu
+ call :Tool156 ComboMenu
+ call :Tool157 ComboMenu
+ call :Tool158 ComboMenu
+ call :Tool159 ComboMenu
+ call :Tool160 ComboMenu
+ call :Tool161 ComboMenu
+ call :Tool162 ComboMenu
+ call :Tool199 ComboMenu
+ call :Tool200 ComboMenu
+ call :Tool260 ComboMenu
+ call :Tool270 ComboMenu
+ call :Tool290 ComboMenu
+
+ echo Hardware inventory complete. Results saved to hardware_inventory.txt
+ type hardware_inventory.txt
+ pause
+ goto ComboMenu
+
 :SponsorshipMenu
-cls
-echo.
-echo Sponsorship
-echo -----------
-echo If you are interested in sponsoring this tool,
-echo your link can be placed in this menu!
-echo.
-echo Website: https://www.jtgsystems.com
-echo.
-pause
-goto MainMenu
+ cls
+ echo.
+ echo Sponsorship
+ echo -----------
+ echo If you are interested in sponsoring this tool,
+ echo your link can be placed in this menu!
+ echo.
+ echo Website: https://www.jtgsystems.com
+ echo.
+ pause
+ goto MainMenu
 
 :InvalidChoice
 echo Invalid choice. Please try again.
