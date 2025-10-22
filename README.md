@@ -1,3 +1,5 @@
+![Banner](banner.png)
+
 # The Ultimate Bat File - Enhanced v2.0 🚀
 
 **Professional Windows System Management Suite**
