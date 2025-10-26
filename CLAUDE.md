@@ -606,3 +606,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 *Professional Windows system management made simple and powerful.*
 
 **© 2024 JTG Systems. All rights reserved.**
+
+## Framework Versions
+
+- No major frameworks detected in this project
+- This may be a utility script, documentation project, or uses custom dependencies
+
