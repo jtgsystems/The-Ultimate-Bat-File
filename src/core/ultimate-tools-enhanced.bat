@@ -6,10 +6,18 @@
 :: Enable enhanced error handling and security
 setlocal enabledelayedexpansion
 set "SCRIPT_DIR=%~dp0"
-set "LOGFILE=%SCRIPT_DIR%\logs\tools_%date:~-4,4%%date:~-10,2%%date:~-7,2%.log"
+for %%i in ("%~dp0..") do set "SRC_DIR=%%~fi"
+for %%i in ("%~dp0..\..") do set "ROOT_DIR=%%~fi"
+set "MODULES_DIR=%SRC_DIR%\modules"
+set "LOG_DIR=%ROOT_DIR%\logs"
+set "CONFIG_DIR=%ROOT_DIR%\config"
+set "BACKUP_DIR=%ROOT_DIR%\backups"
+set "POWERSHELL_CMD=powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command"
+set "LOGFILE=%LOG_DIR%\tools_%date:~-4,4%%date:~-10,2%%date:~-7,2%.log"
 
-:: Create logs directory if it doesn't exist
-if not exist "%SCRIPT_DIR%\logs" mkdir "%SCRIPT_DIR%\logs"
+:: Create required directories if they don't exist
+if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
+if not exist "%BACKUP_DIR%" mkdir "%BACKUP_DIR%" >nul 2>&1
 
 :: Enhanced UAC and Admin Rights Check
 call :CheckAdminRights
@@ -123,8 +131,8 @@ goto :EOF
     set "CONFIG_TELEMETRY=false"
     
     :: Load user configuration if exists
-    if exist "%SCRIPT_DIR%\config\user.conf" (
-        call "%SCRIPT_DIR%\config\user.conf"
+    if exist "%CONFIG_DIR%\user.conf" (
+        call "%CONFIG_DIR%\user.conf"
         echo Configuration loaded from user.conf >> "%LOGFILE%"
     )
     
@@ -145,10 +153,12 @@ goto :EOF
     :: Load core modules
     set "MODULES_LOADED=0"
     for %%m in (system-info maintenance diagnostics networking security) do (
-        if exist "%SCRIPT_DIR%\modules\%%m.bat" (
-            call "%SCRIPT_DIR%\modules\%%m.bat" :LoadModule
+        if exist "%MODULES_DIR%\%%m.bat" (
+            call "%MODULES_DIR%\%%m.bat" :LoadModule
             set /a "MODULES_LOADED+=1"
             echo Module loaded: %%m >> "%LOGFILE%"
+        ) else (
+            echo Module missing: %%m >> "%LOGFILE%"
         )
     )
     
@@ -231,29 +241,33 @@ goto :EOF
 :DisplaySystemStatus
     echo  ┌─ SYSTEM STATUS ────────────────────────────────────────────────┐
     
-    :: Get system uptime
-    for /f "skip=1 tokens=1-6" %%a in ('wmic os get lastbootuptime ^| findstr "20"') do set "boottime=%%a"
-    if defined boottime (
-        set "uptime_year=!boottime:~0,4!"
-        set "uptime_month=!boottime:~4,2!"
-        set "uptime_day=!boottime:~6,2!"
-        set "uptime_hour=!boottime:~8,2!"
-        set "uptime_min=!boottime:~10,2!"
-        echo  │ Last Boot: !uptime_year!/!uptime_month!/!uptime_day! !uptime_hour!:!uptime_min!
-    )
-    
-    :: Get CPU usage
-    for /f "skip=1 tokens=2" %%p in ('wmic cpu get loadpercentage /value 2^>nul ^| findstr "="') do (
-        set "cpu_load=%%p"
-        echo  │ CPU Usage: !cpu_load!%%
-    )
-    
-    :: Get memory usage
-    for /f "skip=1" %%m in ('wmic OS get TotalVisibleMemorySize /value 2^>nul ^| findstr "="') do set "%%m"
-    for /f "skip=1" %%m in ('wmic OS get FreePhysicalMemory /value 2^>nul ^| findstr "="') do set "%%m"
-    if defined TotalVisibleMemorySize if defined FreePhysicalMemory (
-        set /a "mem_used=(!TotalVisibleMemorySize! - !FreePhysicalMemory!) * 100 / !TotalVisibleMemorySize!"
-        echo  │ Memory Usage: !mem_used!%%
+    if /i "!USE_POWERSHELL!"=="true" (
+        call %POWERSHELL_CMD% "$os = Get-CimInstance Win32_OperatingSystem; $cpu = Get-CimInstance Win32_Processor | Measure-Object -Property LoadPercentage -Average; $memUsed = [math]::Round((($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) / $os.TotalVisibleMemorySize) * 100, 0); $lastBoot = Get-Date $os.LastBootUpTime -Format 'yyyy/MM/dd HH:mm'; Write-Host ('  │ Last Boot: ' + $lastBoot); Write-Host ('  │ CPU Usage: ' + $cpu.Average + '%%'); Write-Host ('  │ Memory Usage: ' + $memUsed + '%%');"
+    ) else (
+        :: Get system uptime via WMIC
+        for /f "skip=1 tokens=1-6" %%a in ('wmic os get lastbootuptime ^| findstr "20"') do set "boottime=%%a"
+        if defined boottime (
+            set "uptime_year=!boottime:~0,4!"
+            set "uptime_month=!boottime:~4,2!"
+            set "uptime_day=!boottime:~6,2!"
+            set "uptime_hour=!boottime:~8,2!"
+            set "uptime_min=!boottime:~10,2!"
+            echo  │ Last Boot: !uptime_year!/!uptime_month!/!uptime_day! !uptime_hour!:!uptime_min!
+        )
+        
+        :: Get CPU usage
+        for /f "skip=1 tokens=2" %%p in ('wmic cpu get loadpercentage /value 2^>nul ^| findstr "="') do (
+            set "cpu_load=%%p"
+            echo  │ CPU Usage: !cpu_load!%%
+        )
+        
+        :: Get memory usage
+        for /f "skip=1" %%m in ('wmic OS get TotalVisibleMemorySize /value 2^>nul ^| findstr "="') do set "%%m"
+        for /f "skip=1" %%m in ('wmic OS get FreePhysicalMemory /value 2^>nul ^| findstr "="') do set "%%m"
+        if defined TotalVisibleMemorySize if defined FreePhysicalMemory (
+            set /a "mem_used=(!TotalVisibleMemorySize! - !FreePhysicalMemory!) * 100 / !TotalVisibleMemorySize!"
+            echo  │ Memory Usage: !mem_used!%%
+        )
     )
     
     :: Network status
