@@ -65,14 +65,83 @@ The-Ultimate-Bat-File/
 - **Logging Layer**: Comprehensive activity logging with timestamps
 
 **Execution Flow**:
-1. Administrative privilege check and elevation
+1. Administrative privilege check and elevation via VBScript
 2. System requirements verification (PowerShell, WMIC, Windows version)
-3. Configuration loading (defaults + user overrides)
-4. Module initialization
-5. Main menu display
-6. User interaction loop
-7. Operation execution with logging
-8. Error handling and recovery
+3. Directory structure initialization (logs/, backups/, config/)
+4. Configuration loading (defaults + user overrides)
+5. Module initialization and loading
+6. Main menu display with categorized options
+7. User interaction loop
+8. Operation execution with comprehensive logging
+9. Error handling and recovery mechanisms
+10. Session cleanup and log finalization
+
+### Code Structure Analysis
+
+**Main Script** (`The-Ultimate-Bat-File-By-JTGSYSTEMS.bat` - 4882 lines):
+- Legacy monolithic implementation with all features inline
+- Comprehensive feature set (19 main menu options)
+- Inline UAC elevation using VBScript
+- WMIC-based system information gathering
+- Menu-driven interface with number-based selection
+- Extensive error checking and logging
+- Internet connectivity verification (ping 8.8.8.8)
+
+**Enhanced Core** (`src/core/ultimate-tools-enhanced.bat` - 467+ lines):
+- Modern modular architecture
+- Function-based design with labeled sections
+- Enhanced error handling with try-catch patterns
+- PowerShell-first approach with WMIC fallback
+- Configuration-driven behavior
+- Centralized logging system
+- Dynamic directory path resolution
+
+**System Info Module** (`src/modules/system-info.bat` - 133+ lines):
+- PowerShell `Get-ComputerInfo` and `Get-CimInstance` usage
+- Structured output with color-coded sections
+- Hardware details (CPU cores/threads, memory capacity)
+- Operating system information (version, build, architecture)
+- Network configuration data
+
+**Optimization Utility** (`src/utilities/system-optimization.bat` - 259+ lines):
+- Multi-stage optimization process (7 steps)
+- Temporary file cleanup (user temp, Windows temp, browser caches)
+- Registry optimization with automatic backup
+- Disk defragmentation scheduling
+- System file updates (SFC/DISM)
+- Service optimization for performance
+- Event log management
+- Network settings optimization
+
+### Security Analysis
+
+**Administrative Privilege Handling**:
+- Uses `net session` to verify admin rights
+- VBScript-based UAC elevation (`Shell.Application` COM object)
+- Creates temporary elevation script in `%temp%\elevate.vbs`
+- Automatic cleanup of elevation scripts
+- Non-interactive elevation (silent mode)
+
+**Safe Operation Practices**:
+- Registry backups created before modifications
+- System restore points for major changes
+- All destructive operations logged
+- Confirmation prompts for critical actions
+- Read-only mode for information gathering
+
+**Data Protection**:
+- Sensitive data (logs, backups, config) excluded from git (.gitignored)
+- Registry backups timestamped and versioned
+- Audit trail via comprehensive logging
+- No network transmission of system data
+- Local-only operations (no telemetry by default)
+
+**Potential Security Considerations**:
+- Requires administrative privileges (necessary for system management)
+- Uses WMIC/PowerShell (legitimate Windows tools)
+- VBScript elevation (standard UAC technique)
+- No code obfuscation (transparent operation)
+- All operations reversible via backups
 
 ---
 
@@ -593,7 +662,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 **Version**: 2.0
 
-**Last Updated**: October 2024
+**Last Updated**: December 2024
 
 ---
 
@@ -607,8 +676,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 **© 2024 JTG Systems. All rights reserved.**
 
-## Framework Versions
+## Framework Versions and Dependencies
 
-- No major frameworks detected in this project
-- This may be a utility script, documentation project, or uses custom dependencies
+**Core Dependencies**:
+- Windows CMD.EXE (built-in)
+- PowerShell 5.0+ (built-in with Windows 10/11)
+- VBScript Engine (built-in for UAC elevation)
+- NET Framework (built-in)
+
+**System Tools Utilized**:
+- net.exe - Session and network management
+- reg.exe - Registry operations
+- cleanmgr.exe - Disk cleanup
+- defrag.exe - Disk defragmentation
+- sfc.exe - System File Checker
+- DISM.exe - Deployment Image Servicing
+- netsh.exe - Network configuration
+- wmic.exe - Legacy WMI operations (deprecated, PowerShell fallback available)
+
+**PowerShell Modules**:
+- CimCmdlets - Modern WMI/CIM operations
+- Microsoft.PowerShell.Management - System management
+- NetAdapter - Network adapter management
+- NetTCPIP - TCP/IP configuration
 
