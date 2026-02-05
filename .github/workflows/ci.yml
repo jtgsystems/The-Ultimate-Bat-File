@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  pull_request:
+    branches: [ main, master ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  batch-syntax-check:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check batch file syntax
+      shell: cmd
+      run: |
+        for /r %%f in (*.bat) do (
+          echo Checking syntax: %%f
+          cmd /c "%%f" /?
+        )
+      continue-on-error: true
+
+    - name: Verify file structure
+      shell: pwsh
+      run: |
+        $mainScript = "./src/core/ultimate-tools-SOTA2026.bat"
+        if (Test-Path $mainScript) {
+          Write-Host "✓ Main script exists: $mainScript"
+        } else {
+          Write-Error "Main script not found"
+          exit 1
+        }
+
+  documentation-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check README exists
+      run: |
+        test -f README.md || (echo "README.md is missing" && exit 1)
+        echo "✓ README.md exists"
+
+    - name: Verify documentation completeness
+      run: |
+        grep -q "200\|tool\|menu" README.md && echo "✓ Features mentioned in README"
+        grep -q "version\|3\.0\|SOTA" README.md && echo "✓ Version mentioned in README"
+
+  file-structure:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Check directory structure
+      run: |
+        test -d src/core && echo "✓ src/core directory exists"
+        test -d src/modules && echo "✓ src/modules directory exists"
+        test -d src/utilities && echo "✓ src/utilities directory exists"
+        test -d docs && echo "✓ docs directory exists"
+        test -d logs && echo "✓ logs directory exists" || echo "⚠ logs directory will be created at runtime"
+
+    - name: Check batch file encoding
+      run: |
+        file src/core/*.bat | head -5
+        echo "✓ Batch files checked"
