@@ -16,7 +16,7 @@ jobs:
   batch-syntax-check:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Check batch file syntax
       shell: cmd
@@ -41,7 +41,7 @@ jobs:
   documentation-check:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Check README exists
       run: |
@@ -56,7 +56,7 @@ jobs:
   file-structure:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Check directory structure
       run: |
